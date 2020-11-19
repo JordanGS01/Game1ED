@@ -156,6 +156,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MMap.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Textures.cpp" />
   </ItemGroup>
   <ItemGroup>

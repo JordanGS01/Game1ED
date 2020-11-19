@@ -4,6 +4,7 @@
 #include "MMap.h"
 #include "mapsMatrix.h"
 #include "Player.h"
+#include "SoundManager.h"
 
 #include <iostream>
 //_____________________________________
@@ -33,12 +34,15 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	maplv1 = new Map("sprites/new-wall-lv1.png", "sprites/floor_lv1.png");
 
 	//PROOF-------------------------------------------
-	SDL_Init(SDL_INIT_EVERYTHING);
-	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4048);
-	player1->deadSound = Mix_LoadWAV("sounds/death.wav");
-	player1->apearSound = Mix_LoadWAV("sounds/beggining.wav");
+	SDL_Init(SDL_INIT_AUDIO);
+	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 10000) != 0) {//In case there are some errors with the initialization of the sound
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "No se pudo inicializar el audio. Error:  %s", Mix_GetError());
+	}
 
-	Mix_PlayChannel(-1, player1->apearSound, 0);
+	player1->deadSound = SoundManager::chargeWAV("sounds/death.wav");
+	player1->apearSound = SoundManager::chargeWAV("sounds/beggining.wav");
+
+	SoundManager::playChunk(player1->apearSound);
 };
 
 //
