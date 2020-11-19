@@ -9,6 +9,7 @@
 //_____________________________________
 //Game objects
 Player* player1;
+
 Map* maplv1;//Map of the first level
 
 
@@ -27,7 +28,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	else {//If there's some problem, we didn't initialize anything.
 		isRunning = false;
 	}
-
+	
 	player1 = new Player("sprites/rightMovement.png","sprites/leftMovement.png","sprites/upMovement.png","sprites/downMovement.png", 32, 32);
 	maplv1 = new Map("sprites/new-wall-lv1.png", "sprites/floor_lv1.png");
 
@@ -52,6 +53,7 @@ void Game::render() {
 	SDL_RenderClear(renderer);//Clear the renderer of anything
 
 	//Here will be added all the information of the renderer.
+	
 	maplv1->drawMap();
 
 	player1->render();

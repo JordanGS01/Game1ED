@@ -167,6 +167,7 @@
     <ClInclude Include="mapsMatrix.h" />
     <ClInclude Include="MMap.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Textures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

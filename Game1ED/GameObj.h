@@ -1,4 +1,8 @@
 #pragma once
+#ifndef GAMEOBJ_H
+#define GAMEOBJ_H
+
+
 #include "Game.h"
 
 
@@ -23,3 +27,5 @@ private:
 	SDL_Rect srcRect, destRect;
 
 };
+
+#endif // !GAMEOBJ_H
