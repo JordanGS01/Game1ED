@@ -1,9 +1,11 @@
 #include <iostream>
 #include "Game.h"
+#include "time.h"
 
 Game* game = NULL;
-int main(int argc, char* argv[]) {
 
+int main(int argc, char* argv[]) {
+	srand(time(NULL));
 	//Variables
 
 	//To manage the delay of the game
@@ -17,7 +19,7 @@ int main(int argc, char* argv[]) {
 
 	//Game inicialization.
 	game->init("Dungeon WarRunners", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 736, 736, 0);
-	
+
 	//Main loop of the game.
 	while (game->running()) {
 
@@ -37,5 +39,3 @@ int main(int argc, char* argv[]) {
 	game->clean();
 	return 0;
 }
-
-

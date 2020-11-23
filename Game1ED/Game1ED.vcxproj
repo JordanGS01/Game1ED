@@ -151,11 +151,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Colision.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObj.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MMap.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Recompensa.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Textures.cpp" />
   </ItemGroup>
@@ -163,11 +165,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Colision.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObj.h" />
     <ClInclude Include="mapsMatrix.h" />
     <ClInclude Include="MMap.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Recompensa.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Textures.h" />
   </ItemGroup>
