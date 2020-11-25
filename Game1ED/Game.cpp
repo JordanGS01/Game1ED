@@ -11,6 +11,7 @@
 #include <ctime>
 #include "Recompensa.h"
 #include "SoundManager.h"
+#include "Lifes.h"
 
 
 using namespace std;
@@ -20,9 +21,10 @@ Player* player1;
 Map* maplv1;//Map of the first level
 Recompensa* recompensas;
 Colision* colision;
+Life* vidas;
 SDL_Event Game::event;//To handle the game events.
 SDL_Renderer* Game::renderer = nullptr;
-int nivel = 3;
+int nivel = 1;
 int rec = 0;
 int coordenadas_recompensa[5][2] = { {0,0},{0,0},{0,0},{0,0},{0,0} };
 const char* pisos[3] = { "sprites/floor_lv1.png" ,"sprites/floor_nivel2.png","sprites/floor_lvl3.png" };
@@ -66,6 +68,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	}
 	player1 = new Player("sprites/rightMovement.png", "sprites/leftMovement.png", "sprites/upMovement.png", "sprites/downMovement.png", 32, 32);
 	maplv1 = new Map(muros[nivel - 1], pisos[nivel - 1]);
+	vidas = new Life("sprites/corazones.png", 650, 680);
 	srand((unsigned)time(0));
 
 	int random;
@@ -102,6 +105,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 void Game::update() {
 
 	player1->update();
+	vidas->update();
 	maplv1->loadMap(mapa);
 };
 
@@ -113,6 +117,8 @@ void Game::render() {
 	maplv1->drawMap();
 
 	player1->render();
+
+	vidas->render();
 	SDL_RenderPresent(renderer);
 };
 
