@@ -37,6 +37,7 @@ public:
 	//Sounds that the player can make.
 	Mix_Chunk* deadSound;
 	Mix_Chunk* apearSound;
+
 private:
 	int life;
 
