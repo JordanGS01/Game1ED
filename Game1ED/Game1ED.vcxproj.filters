@@ -45,6 +45,9 @@
     <ClCompile Include="Lifes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Grafo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -78,6 +81,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Lifes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mapsMatrixForGraphs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Grafo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

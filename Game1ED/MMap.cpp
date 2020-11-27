@@ -77,19 +77,18 @@ void Map::drawMap() {
             switch (typeObj)
             {
                 //Agregar case 0 para pintar el suelo
-            case 1:
-                Texture::draw(floor, src, dest);
-                Texture::draw(wall, src, dest);
-                break;
             case 0:
                 Texture::draw(floor, src, dest);
                 break;
+            case 1:                
+                Texture::draw(wall, src, dest);
+                break;            
             case 2:
                 Texture::draw(floor, src, dest);
-                Texture::draw(recompensa, src, dest);
+                Texture::draw(recompensa, src, dest);//Esto esta actualmente porque no se han creado las recompensas ni los enemigos con piskel...hay que hacerlo.
                 break;
             case 3:
-                Texture::draw(floor, src, dest);
+                Texture::draw(floor, src, dest);//Esto esta actualmente porque no se han creado las recompensas ni los enemigos con piskel...hay que hacerlo.
                 Texture::draw(mino, src, dest);
                 break;
             default:
