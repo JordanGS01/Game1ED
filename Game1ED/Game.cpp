@@ -11,7 +11,7 @@
 #include <ctime>
 #include "Recompensa.h"
 #include "SoundManager.h"
-#include "Lifes.h"
+#include "Life.h"
 
 
 using namespace std;
@@ -19,21 +19,22 @@ using namespace std;
 //Game objects
 Player* player1;
 Map* maplv1;//Map of the first level
-Recompensa* recompensas;
+
 Colision* colision;
 Life* vidas;
 SDL_Event Game::event;//To handle the game events.
 SDL_Renderer* Game::renderer = nullptr;
-int nivel = 1;
+
 int rec = 0;
 int coordenadas_recompensa[5][2] = { {0,0},{0,0},{0,0},{0,0},{0,0} };
 const char* pisos[3] = { "sprites/floor_lv1.png" ,"sprites/floor_nivel2.png","sprites/floor_lvl3.png" };
 const char* muros[3] = { "sprites/new-wall-lv1.png" ,"sprites/muro_lvl2.png","sprites/muro_lvl3.png" };
 int mapa[23][23];
-
+bool victoria = false;
+Recompensa* recompensas;
 
 //Recives the title of the game, x and y possition in screen of the window, width and height if the window.
-void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen) {
+void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen, int nivel) {
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {//If SDL isn't initialized
 		window = SDL_CreateWindow(title, xpos, ypos, width, height, fullscreen);
@@ -87,13 +88,15 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 				}
 			}
 		}
-	}	
+	}
+	rec = 0;
 
 	//Aca se inicializara todo lo referente a sonidos
 	SDL_Init(SDL_INIT_EVERYTHING);
 	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4048);
 
 	recompensas = new Recompensa("sounds/reward.wav", coordenadas_recompensa);
+	recompensas->num_recompensas = 5;
 	player1->deadSound = SoundManager::chargeWAV("sounds/death.wav");
 	player1->apearSound = SoundManager::chargeWAV("sounds/beggining.wav");
 
@@ -105,6 +108,18 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 void Game::update() {
 
 	player1->update();
+	if (player1->life == 3) {
+		vidas->srcY = 0;
+	}
+	if (player1->life == 2) {
+		vidas->srcY = 64;
+	}
+	if (player1->life == 1) {
+		vidas->srcY = 128;
+	}
+	if (player1->life == 0) {
+		vidas->srcY = 192;
+	}
 	vidas->update();
 	maplv1->loadMap(mapa);
 };
@@ -114,7 +129,7 @@ void Game::render() {
 	SDL_RenderClear(renderer);//Clear the renderer of anything
 
 	//Here will be added all the information of the renderer.
-	maplv1->drawMap();
+	maplv1->drawMap(victoria);
 
 	player1->render();
 
@@ -134,12 +149,21 @@ void Game::handleEvents() {
 	case SDL_KEYDOWN:
 		switch (event.key.keysym.sym)
 		{
+
 		case SDLK_RIGHT://Press the keyboard right arrow.
 			if (player1->getXPos() < 704 && colision->comprobarMuroderecha(player1->getXPos(), player1->getYPos(), mapa) == false) {
 				player1->addXPos();
 				player1->setRightToMain();//Change of thexture.
 				player1->addYsrc();//Move across the sprite sheet
-				recompensas->comprobarRecompensa(player1->getXPos(), player1->getYPos(), coordenadas_recompensa, mapa);
+				recompensas->comprobarRecompensa(player1->getXPos(), player1->getYPos(), coordenadas_recompensa, mapa, recompensas);
+				if (recompensas->num_recompensas == 0) {
+					victoria = true;
+				}
+				if (recompensas->comprobarPuerta(player1->getXPos(), player1->getYPos(), victoria) == true) {
+					victoria = false;
+					recompensas->num_recompensas = 5;
+					Game::isRunning = false;
+				}
 				SDL_Delay(30);
 			}
 			break;
@@ -149,7 +173,15 @@ void Game::handleEvents() {
 				player1->subXPos();
 				player1->setLeftToMain();//Change of texture.
 				player1->addYsrc();//Move across the sprite sheet
-				recompensas->comprobarRecompensa(player1->getXPos(), player1->getYPos(), coordenadas_recompensa, mapa);
+				recompensas->comprobarRecompensa(player1->getXPos(), player1->getYPos(), coordenadas_recompensa, mapa, recompensas);
+				if (recompensas->num_recompensas == 0) {
+					victoria = true;
+				}
+				if (recompensas->comprobarPuerta(player1->getXPos(), player1->getYPos(), victoria) == true) {
+					victoria = false;
+					recompensas->num_recompensas = 5;
+					Game::isRunning = false;
+				}
 				SDL_Delay(30);
 			}
 			break;
@@ -159,7 +191,15 @@ void Game::handleEvents() {
 				player1->subYPos();
 				player1->setUpToMain();
 				player1->addYsrc();//Move across the sprite sheet.
-				recompensas->comprobarRecompensa(player1->getXPos(), player1->getYPos(), coordenadas_recompensa, mapa);
+				recompensas->comprobarRecompensa(player1->getXPos(), player1->getYPos(), coordenadas_recompensa, mapa, recompensas);
+				if (recompensas->num_recompensas == 0) {
+					victoria = true;
+				}
+				if (recompensas->comprobarPuerta(player1->getXPos(), player1->getYPos(), victoria) == true) {
+					victoria = false;
+					recompensas->num_recompensas = 5;
+					Game::isRunning = false;
+				}
 				SDL_Delay(30);
 
 			}
@@ -170,7 +210,15 @@ void Game::handleEvents() {
 				player1->addYPos();
 				player1->setDownToMain();
 				player1->addYsrc();//Move across the sprite sheet.
-				recompensas->comprobarRecompensa(player1->getXPos(), player1->getYPos(), coordenadas_recompensa, mapa);
+				recompensas->comprobarRecompensa(player1->getXPos(), player1->getYPos(), coordenadas_recompensa, mapa, recompensas);
+				if (recompensas->num_recompensas == 0) {
+					victoria = true;
+				}
+				if (recompensas->comprobarPuerta(player1->getXPos(), player1->getYPos(), victoria) == true && victoria == true) {
+					victoria = false;
+					recompensas->num_recompensas = 5;
+					Game::isRunning = false;
+				}
 				SDL_Delay(30);
 			}
 			break;
@@ -187,5 +235,4 @@ void Game::handleEvents() {
 void Game::clean() {//Clean the memory from every information created by the program.
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
-	SDL_Quit();
 };

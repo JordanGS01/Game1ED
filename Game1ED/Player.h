@@ -6,7 +6,7 @@
 #include "Game.h"
 
 
-class Player{ //: public GameObject{
+class Player { //: public GameObject{
 
 public:
 	Player(const char* rightSheet, const char* leftSheet, const char* upSheet, const char* downSheet, int xpos, int ypos);//Constructor
@@ -37,13 +37,10 @@ public:
 	//Sounds that the player can make.
 	Mix_Chunk* deadSound;
 	Mix_Chunk* apearSound;
-
-private:
-	int life;
-
 	int xpos;
 	int ypos;
-
+	int life;
+private:
 	int srcY;
 
 	SDL_Rect srcRect, destRect;

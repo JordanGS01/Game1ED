@@ -58,12 +58,13 @@ void Map::loadMap(int arr[23][23]) {
 
 //Draws the map on screen.
 //The matrix values tell us what to draw in each space.
-void Map::drawMap() {
+void Map::drawMap(bool victoria) {
     int typeObj = 0;//This variable helps to know what image use to draw the laberint.
         //____________
     //PRUEBA
     SDL_Texture* mino = Texture::LoadTexture("sprites/minotauro.png");
     SDL_Texture* recompensa = Texture::LoadTexture("sprites/oro.png");
+    SDL_Texture* puerta = Texture::LoadTexture("sprites/puerta.png");
     //_____________
 
     for (int row = 0; row < 23; row++) {
@@ -77,19 +78,33 @@ void Map::drawMap() {
             switch (typeObj)
             {
                 //Agregar case 0 para pintar el suelo
+            case 1:
+                Texture::draw(floor, src, dest);
+                Texture::draw(wall, src, dest);
+                break;
             case 0:
                 Texture::draw(floor, src, dest);
                 break;
-            case 1:                
-                Texture::draw(wall, src, dest);
-                break;            
             case 2:
                 Texture::draw(floor, src, dest);
-                Texture::draw(recompensa, src, dest);//Esto esta actualmente porque no se han creado las recompensas ni los enemigos con piskel...hay que hacerlo.
+                Texture::draw(recompensa, src, dest);
                 break;
             case 3:
-                Texture::draw(floor, src, dest);//Esto esta actualmente porque no se han creado las recompensas ni los enemigos con piskel...hay que hacerlo.
+                Texture::draw(floor, src, dest);
                 Texture::draw(mino, src, dest);
+                break;
+            case 5:
+                if (victoria == false) {
+                    Texture::draw(wall, src, dest);
+                    Texture::draw(puerta, src, dest);
+                }
+                else {
+
+                    Texture::draw(wall, src, dest);
+                    src.x = 32;
+                    Texture::draw(puerta, src, dest);
+                    src.x = 0;
+                }
                 break;
             default:
                 break;

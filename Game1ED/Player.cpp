@@ -1,8 +1,9 @@
 #include "Player.h"
 #include "Textures.h"
 
+
 Player::Player(const char* rightSheet, const char* leftSheet, const char* upSheet, const char* downSheet, int x, int y) {
-	
+
 	rightMovement = Texture::LoadTexture(rightSheet);
 	leftMovement = Texture::LoadTexture(leftSheet);
 	upMovement = Texture::LoadTexture(upSheet);
@@ -10,7 +11,7 @@ Player::Player(const char* rightSheet, const char* leftSheet, const char* upShee
 
 	mainTexture = rightMovement;
 
-	life = 3;
+	life = 2;
 
 	xpos = x;
 	ypos = y;
@@ -36,9 +37,7 @@ void Player::update() {
 void Player::render() {
 	SDL_RenderCopy(Game::renderer, mainTexture, &srcRect, &destRect);
 }
-
 //This functions helps to manage the movement of the objects.
-
 void Player::subXPos() {//Move left (sub to X coordinate)
 	xpos = xpos - 4;
 }
@@ -64,6 +63,8 @@ void Player::addYsrc() {//This helps to move throught the source sprite sheet to
 		srcY += 32;
 	}
 };
+
+
 
 
 //Chagers of main texture.

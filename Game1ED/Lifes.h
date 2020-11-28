@@ -18,11 +18,11 @@ public:
 	void life2();
 	void life1();
 	void life0();
-
+	int srcY;
 private:
 	int xpos;
 	int ypos;
-	int srcY;
+
 
 	SDL_Texture* mainTexture;
 

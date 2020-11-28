@@ -3,15 +3,14 @@
 #define MMAP_H
 #include "Game.h"
 
-
 class Map {
-	
+
 public:
 	Map(const char* wallDir, const char* floorDir);
 
 
 	void loadMap(int arr[23][23]);
-	void drawMap();
+	void drawMap(bool victoria);
 
 private:
 	SDL_Rect src, dest;
