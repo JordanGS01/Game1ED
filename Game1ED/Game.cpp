@@ -11,7 +11,9 @@
 #include <ctime>
 #include "Recompensa.h"
 #include "SoundManager.h"
-#include "Life.h"
+#include "Lifes.h"
+#include "ContRecompensa.h"
+
 
 
 using namespace std;
@@ -19,9 +21,9 @@ using namespace std;
 //Game objects
 Player* player1;
 Map* maplv1;//Map of the first level
-
 Colision* colision;
 Life* vidas;
+ContRecompensa* contadorRecomp;
 SDL_Event Game::event;//To handle the game events.
 SDL_Renderer* Game::renderer = nullptr;
 
@@ -69,7 +71,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	}
 	player1 = new Player("sprites/rightMovement.png", "sprites/leftMovement.png", "sprites/upMovement.png", "sprites/downMovement.png", 32, 32);
 	maplv1 = new Map(muros[nivel - 1], pisos[nivel - 1]);
-	vidas = new Life("sprites/corazones.png", 650, 680);
+	vidas = new Life("sprites/corazones.png", 520, 690);
+	contadorRecomp = new ContRecompensa("sprites/numeros.png", "sprites/oro.png", 590, 685, 630, 690);
 	srand((unsigned)time(0));
 
 	int random;
@@ -121,6 +124,25 @@ void Game::update() {
 		vidas->srcY = 192;
 	}
 	vidas->update();
+	contadorRecomp->update();
+	if (recompensas->num_recompensas == 5) {
+		contadorRecomp->srcY = 320;
+	}
+	if (recompensas->num_recompensas == 4) {
+		contadorRecomp->srcY = 256;
+	}
+	if (recompensas->num_recompensas == 3) {
+		contadorRecomp->srcY = 192;
+	}
+	if (recompensas->num_recompensas == 2) {
+		contadorRecomp->srcY = 128;
+	}
+	if (recompensas->num_recompensas == 1) {
+		contadorRecomp->srcY = 64;
+	}
+	if (recompensas->num_recompensas == 0) {
+		contadorRecomp->srcY = 0;
+	}
 	maplv1->loadMap(mapa);
 };
 
@@ -134,6 +156,7 @@ void Game::render() {
 	player1->render();
 
 	vidas->render();
+	contadorRecomp->render();
 	SDL_RenderPresent(renderer);
 };
 
