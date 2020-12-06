@@ -4,6 +4,31 @@ Grafo::Grafo() {
 	head = nullptr;
 }
 
+//Unmark every Node in the graph.
+void Grafo::desmarca() {
+	Nodo* auxNodo = head;
+	while (auxNodo != nullptr) {
+		auxNodo->visitado = false;
+
+		auxNodo = auxNodo->sig;
+	}
+	return;
+}
+
+//Unmark every Edge of the graph.
+void Grafo::desmarcaAristas() {
+	Nodo* auxNodo = head;
+	while (auxNodo != nullptr) {
+		Arista* auxArista = auxNodo->aristas;
+		while (auxArista != nullptr) {
+			auxArista->revisada = false;
+			auxArista = auxArista->sig;
+		}
+		auxNodo = auxNodo->sig;
+	}
+	return;
+}
+
 //Search a Nodo struct in the main list.Recives a (x,y) coordinate positions.
 //Return the Nodo struct if it's find or nullptr if it doesn't.
 Nodo* Grafo::buscaNodo(int x, int y) {
@@ -26,6 +51,7 @@ bool Grafo::insertaNodo(int x, int y) {
 		newNodo->yPos = y;
 
 		head = newNodo;
+		cantNodos++;
 		return true;
 	}
 	else if (buscaNodo(x, y) == nullptr) {
@@ -33,7 +59,9 @@ bool Grafo::insertaNodo(int x, int y) {
 		newNodo->xPos = x;
 		newNodo->yPos = y;
 		newNodo->sig = head;
+
 		head = newNodo;
+		cantNodos++;
 		return true;
 	}
 	return false;
@@ -56,7 +84,7 @@ Arista* Grafo::buscaArista(Nodo* src, Nodo* dest) {
 //Inserts a Arista struct to the sublist of a Nodo struct.
 //Recives the source and destine Nodo structs and the "int" distance that exists between both structs.
 //Returns true if the insertion was sucesfully done and false if it don't.
-bool Grafo::insertaArista(Nodo* src, Nodo* dest, int peso) {
+bool Grafo::insertaArista(Nodo* src, Nodo* dest, int peso, bool doble) {
 	if ((src == nullptr) || (dest == nullptr)) {
 		return false;
 	}
@@ -67,8 +95,10 @@ bool Grafo::insertaArista(Nodo* src, Nodo* dest, int peso) {
 		newArista->peso = peso;
 
 		src->aristas = newArista;
-		
-		insertaArista(dest, src, peso);//Because the edges have to go in both directions.
+
+		if (doble == true) {
+			insertaArista(dest, src, peso,false);//Because the edges have to go in both directions.
+		}
 		return true;
 	}
 	else if (buscaArista(src, dest) == nullptr) {
@@ -81,7 +111,9 @@ bool Grafo::insertaArista(Nodo* src, Nodo* dest, int peso) {
 		src->aristas->ant = newArista;
 		src->aristas = newArista;
 
-		insertaArista(dest, src, peso);
+		if (doble == true) {
+			insertaArista(dest, src, peso,false);
+		}
 		return true;
 	}
 	return false;
@@ -90,8 +122,8 @@ bool Grafo::insertaArista(Nodo* src, Nodo* dest, int peso) {
 //What this function does is create ALL the Nodo structures of the graph based on a matrix.
 //For every "6" found in a (x,y) position of the matrix, it'll create a new Nodo structure.
 void Grafo::inicializaNodosMatriz(int matriz[23][23]) {
-	for (int y = 0; y < 23; y++) {
-		for (int x = 0; x < 23; x++) {
+	for (int x = 0; x < 23; x++) {		
+		for (int y = 0; y < 23; y++) {  
 			if (matriz[x][y] == 6) {
 				insertaNodo(x,y);
 			}
@@ -108,7 +140,7 @@ bool Grafo::adyacentLeft(int x, int y, int matriz[23][23]) {
 	int xAux = x;
 	for (xAux; xAux > 0; xAux--) {
 		if (matriz[xAux][y] == 6) {
-			return insertaArista(auxNodo, buscaNodo(xAux, y), peso);
+			return insertaArista(auxNodo, buscaNodo(xAux, y), peso, true);
 		}
 		else if (matriz[xAux][y] == 1) { return false; }
 
@@ -123,7 +155,7 @@ bool Grafo::adyacentRight(int x, int y, int matriz[23][23]) {
 	int xAux = x;
 	for (xAux; xAux < 22; xAux++) {//22 because there'll be ALWAYS a 1 at the last position of the matrix
 		if (matriz[xAux][y] == 6) {
-			return insertaArista(auxNodo, buscaNodo(xAux, y), peso);
+			return insertaArista(auxNodo, buscaNodo(xAux, y), peso, true);
 		}
 		else if (matriz[xAux][y] == 1) { return false; }
 
@@ -138,7 +170,7 @@ bool Grafo::adyacentDown(int x, int y, int matriz[23][23]) {
 	int yAux = y;
 	for (yAux; yAux < 22; yAux++) {
 		if (matriz[x][yAux] == 6) {
-			return insertaArista(auxNodo, buscaNodo(x, yAux), peso);
+			return insertaArista(auxNodo, buscaNodo(x, yAux), peso, true);
 		}
 		else if (matriz[x][yAux] == 1) { return false; }
 
@@ -153,7 +185,7 @@ bool Grafo::adyacentUp(int x, int y, int matriz[23][23]) {
 	int yAux = y;
 	for (yAux; yAux > 0; yAux--) {
 		if (matriz[x][yAux] == 6) {
-			return insertaArista(auxNodo, buscaNodo(x, yAux), peso);			
+			return insertaArista(auxNodo, buscaNodo(x, yAux), peso, true);			
 		}
 		else if (matriz[x][yAux] == 1) { return false; }
 
@@ -178,4 +210,62 @@ void Grafo::inicializaAristasMatriz(int matriz[23][23]) {
 	}
 }
 
+//Short ways
+Arista** Grafo::Dijkstra(Nodo* inicio, Nodo* fin) {//HACE FALTA DEVOLVER EL ARREGLO CON LOS VERTICES QUE FORMAN EL CAMINO
+	desmarca();
+	desmarcaAristas();
+	CPA->vaciarCola();
 
+	Arista** arrAristas = new Arista * [cantNodos - 1]();
+
+	int pesos[100];
+	Nodo* vertices[100] = { nullptr };
+	Nodo* ruta[100] = { nullptr };
+
+	vertices[0] = inicio;
+	ruta[0] = inicio;
+	pesos[0] = 0;
+	inicio->index = 0;
+	inicio->visitado = true;
+
+	Arista* arista = inicio->aristas;
+	while (arista != nullptr) {
+		CPA->push(arista);
+		arista = arista->sig;
+	}
+
+	while (!CPA->colaVacia()) {
+		arista = CPA->pop();
+		arista->revisada = true;
+		if (arista->dest->visitado == false) {
+			for (int i = 0; i < cantNodos; i++) {
+				if (vertices[i] == nullptr) {
+					vertices[i] = arista->dest;
+					ruta[i] = arista->src;
+					pesos[i] = pesos[arista->src->index] + arista->peso;
+					arista->dest->index = i;
+					arista->dest->visitado = true;
+					break;
+				}
+			}
+		}
+
+		else if (arista->dest->visitado == true) {
+			if (pesos[arista->dest->index] > pesos[arista->src->index] + arista->peso) {
+				pesos[arista->dest->index] = pesos[arista->src->index] + arista->peso;
+				ruta[arista->dest->index] = arista->src;
+			}
+		}
+
+		Arista* auxArista = arista->dest->aristas;
+		if (auxArista != nullptr) {
+			while (auxArista != nullptr) {
+				if (auxArista->revisada == false) {
+					CPA->push(auxArista);
+				}
+				auxArista = auxArista->sig;
+			}
+		}
+	}
+	return arrAristas;
+}

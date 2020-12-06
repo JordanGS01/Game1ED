@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "Textures.h"
-#include "GameObj.h"
 #include "MMap.h"
 #include "mapsMatrix.h"
 #include "Player.h"

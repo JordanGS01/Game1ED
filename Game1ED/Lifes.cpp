@@ -1,4 +1,4 @@
-#include "Life.h"
+#include "Lifes.h"
 #include "Textures.h"
 
 Life::Life(const char* LifePLayer, int x, int y) {

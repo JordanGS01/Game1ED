@@ -11,7 +11,7 @@ Player::Player(const char* rightSheet, const char* leftSheet, const char* upShee
 
 	mainTexture = rightMovement;
 
-	life = 2;
+	life = 3;
 
 	xpos = x;
 	ypos = y;

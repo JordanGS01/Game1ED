@@ -154,7 +154,6 @@
     <ClCompile Include="Colision.cpp" />
     <ClCompile Include="ContRecompensa.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameObj.cpp" />
     <ClCompile Include="Grafo.cpp" />
     <ClCompile Include="Lifes.cpp" />
     <ClCompile Include="main.cpp" />
@@ -171,7 +170,6 @@
     <ClInclude Include="Colision.h" />
     <ClInclude Include="ContRecompensa.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GameObj.h" />
     <ClInclude Include="Grafo.h" />
     <ClInclude Include="Lifes.h" />
     <ClInclude Include="mapsMatrix.h" />
