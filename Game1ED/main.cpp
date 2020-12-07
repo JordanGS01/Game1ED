@@ -32,12 +32,10 @@ int main(int argc, char* argv[]) {
 			SDL_Delay(frameDelay - frameT);
 		}
 	}
-
-
 	game->clean();
-	//Created classes.
-	Game* game2 = new Game();
 
+
+	/*Game* game2 = new Game();
 	//Game inicialization.
 	game2->init("Dungeon WarRunners", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 736, 736, 0, 2);
 	//Main loop of the game.
@@ -55,10 +53,9 @@ int main(int argc, char* argv[]) {
 			SDL_Delay(frameDelay - frameT);
 		}
 	}
+	game2->clean();*/
 
-
-	game2->clean();
-	Game* game3 = new Game();
+	/*Game* game3 = new Game();
 	game3->init("Dungeon WarRunners", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 736, 736, 0, 3);
 	//Main loop of the game.
 	while (game3->running()) {
@@ -77,7 +74,7 @@ int main(int argc, char* argv[]) {
 	}
 
 
-	game3->clean();
+	game3->clean();*/
 	SDL_Quit();
 	return 0;
 }

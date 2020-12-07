@@ -2,7 +2,7 @@
 #include "Textures.h"
 #include "MMap.h"
 #include "mapsMatrix.h"
-#include "Player.h"
+#include "GameObj.h"
 #include <iostream>
 #include "Colision.h"
 #include <stdio.h>
@@ -12,19 +12,23 @@
 #include "SoundManager.h"
 #include "Lifes.h"
 #include "ContRecompensa.h"
-
+#include "Enemy.h"
+#include "Grafo.h"
+#include "mapsMatrixForGraphs.h"
 
 
 using namespace std;
 //_____________________________________
 //Game objects
-Player* player1;
+Grafo* grafo = new Grafo();
+GameObj* player1;
 Map* maplv1;//Map of the first level
 Colision* colision;
 Life* vidas;
 ContRecompensa* contadorRecomp;
 SDL_Event Game::event;//To handle the game events.
 SDL_Renderer* Game::renderer = nullptr;
+Enemy* enemy1;
 
 int rec = 0;
 int coordenadas_recompensa[5][2] = { {0,0},{0,0},{0,0},{0,0},{0,0} };
@@ -48,6 +52,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	}
 
 	if (nivel == 1) {
+		grafo->inicializaNodosMatriz(grafoMlvl1);
+		grafo->inicializaAristasMatriz(grafoMlvl1);
 		for (int row = 0; row < 23; row++) {
 			for (int column = 0; column < 23; column++) {
 				mapa[row][column] = mlvl1[row][column];
@@ -68,7 +74,12 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 			}
 		}
 	}
-	player1 = new Player("sprites/rightMovement.png", "sprites/leftMovement.png", "sprites/upMovement.png", "sprites/downMovement.png", 32, 32);
+	
+	enemy1 = new Enemy("sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", 288, 96);
+	enemy1->initGrafo(grafo);
+	//player1 = new GameObj("sprites/rightMovement.png", "sprites/leftMovement.png", "sprites/upMovement.png", "sprites/downMovement.png", 32, 32);
+	player1 = new GameObj("sprites/JordanRight.png", "sprites/JordanLeft.png", "sprites/JordanUp.png", "sprites/JordanDown.png", 32, 32);
+	player1->initGrafo(grafo);
 	maplv1 = new Map(muros[nivel - 1], pisos[nivel - 1]);
 	vidas = new Life("sprites/corazones.png", 520, 690);
 	contadorRecomp = new ContRecompensa("sprites/numeros.png", "sprites/oro.png", 590, 685, 630, 690);
@@ -106,10 +117,13 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 };
 
 
-//
 void Game::update() {
 
 	player1->update();
+	enemy1->seekPlayer(player1);
+	enemy1->update();
+	enemy1->killPlayer(player1->getXPos(),player1->getYPos(),player1);
+
 	if (player1->life == 3) {
 		vidas->srcY = 0;
 	}
@@ -123,6 +137,7 @@ void Game::update() {
 		vidas->srcY = 192;
 	}
 	vidas->update();
+	
 	contadorRecomp->update();
 	if (recompensas->num_recompensas == 5) {
 		contadorRecomp->srcY = 320;
@@ -142,6 +157,7 @@ void Game::update() {
 	if (recompensas->num_recompensas == 0) {
 		contadorRecomp->srcY = 0;
 	}
+
 	maplv1->loadMap(mapa);
 };
 
@@ -153,6 +169,7 @@ void Game::render() {
 	maplv1->drawMap(victoria);
 
 	player1->render();
+	enemy1->render();
 
 	vidas->render();
 	contadorRecomp->render();

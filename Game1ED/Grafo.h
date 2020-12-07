@@ -32,6 +32,11 @@ struct Arista {
 	Arista* ant;
 
 	bool revisada;
+
+	bool left = false;
+	bool right = false;
+	bool up = false;
+	bool down = false;
 };
 
 struct ColaAristas {
@@ -78,12 +83,15 @@ struct ColaAristas {
 
 
 class Grafo {
+	
 public:
 	Nodo* head;
 	ColaAristas* CPA = new ColaAristas();
 	int cantNodos = 0;
 	//Constructor
 	Grafo();
+
+	void eliminaMemoriaGrafo();
 
 	//Unmark functions.
 	void desmarca();
@@ -95,7 +103,7 @@ public:
 
 	//Edges insertion
 	Arista* buscaArista(Nodo* src, Nodo* dest);
-	bool insertaArista(Nodo* src, Nodo* dest, int peso, bool doble);
+	bool insertaArista(Nodo* src, Nodo* dest, int peso, bool doble,char direction);
 
 	//Creation of the Graph using a matrix
 	void inicializaNodosMatriz(int matriz[23][23]);
@@ -106,7 +114,7 @@ public:
 	void inicializaAristasMatriz(int matriz[23][23]);
 
 	//DIJKSTRA
-	Arista** Dijkstra(Nodo* src, Nodo* dest);
+	char Dijkstra(Nodo* src, Nodo* dest);
 };
 
 #endif

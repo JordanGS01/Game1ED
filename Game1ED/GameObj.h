@@ -1,16 +1,17 @@
 #pragma once
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef GAMEOBJ_H
+#define GAMEOBJ_H
 
 
 #include "Game.h"
+#include "Grafo.h"
 
 
-class Player { //: public GameObject{
+class GameObj { //: public GameObject{
 
 public:
-	Player(const char* rightSheet, const char* leftSheet, const char* upSheet, const char* downSheet, int xpos, int ypos);//Constructor
-	~Player();//Destructor
+	GameObj(const char* rightSheet, const char* leftSheet, const char* upSheet, const char* downSheet, int xpos, int ypos);//Constructor
+	~GameObj();//Destructor
 
 	void render();
 	void update();
@@ -37,8 +38,17 @@ public:
 	//Sounds that the player can make.
 	Mix_Chunk* deadSound;
 	Mix_Chunk* apearSound;
+	
+	void initGrafo(Grafo* GM);
+	Grafo* grafoMapa;
+	Nodo* nodoActual;
+
+	int initPosX;
+	int initPosY;
+	
 	int xpos;
 	int ypos;
+
 	int life;
 private:
 	int srcY;
