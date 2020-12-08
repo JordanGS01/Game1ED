@@ -77,7 +77,7 @@ Se creó una matriz de 23x23 para manejar el pintado del laberinto, siendo un va
 
  **Interfaz** 
   
-    Se creó una ventana de SDL que se encarga de representar el titulo del juego y los 3 posible personajes jugables, en la pantalla de la interfaz el jugador  procede a seleccionar el personaje con el que este procedera a jugar el videojuego.
+   Se creó una ventana de SDL que se encarga de representar el titulo del juego y los 3 posible personajes jugables, en la pantalla de la interfaz el jugador  procede a seleccionar el personaje con el que este procedera a jugar el videojuego.
  **Pantalla de Game Over**
    
    Se creo una pantalla que inicia el fin del juego cuando al jugador no le quedan vidas, esta cierra el juego y se encarga de indicar el fin del juego.
