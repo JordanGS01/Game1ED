@@ -44,7 +44,8 @@ Se creó una matriz de 23x23 para manejar el pintado del laberinto, siendo un va
 
    Se hace manejo de las estructuras de datos SDL_Rect para el pintado de personajes y el laberinto. manejando las posiciones de estos mediante el incremento 
    o decremento de los valores de la estructura.
-  ## Fase 2 
+   
+## Fase 2 
   **Manejo de Grafos para el movimento de enemigos**
   Se procedió a la realización de un grafo que se encarga de controlar el movimiento de los enemigos, se coloca un nodo donde se encuentra una intersección para que así estos puedan encontrar al personaje y eliminarlo, estos se insertan mediante un algoritmo  que recorre las matrices y busca los lugares donde se encuentran una intersección para así colocar un nodo, luego una vez los nodos están creados se procede a la creación de los ejes y sus respectivos pesos. 
   
