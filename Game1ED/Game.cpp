@@ -74,7 +74,29 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 			}
 		}
 	}
-	
+	//AUX//
+	/*Nodo* auxNodo = grafo->head;
+	while (auxNodo != nullptr) {
+		cout << "(" << auxNodo->xPos << "," << auxNodo->yPos << ")";
+
+		Arista* auxArista = auxNodo->aristas;
+		while (auxArista != nullptr) {
+			cout <<" => "<< "(" << auxArista->dest->xPos << "," << auxArista->dest->yPos << ")";
+			auxArista = auxArista->sig;
+		}
+		auxNodo = auxNodo->sig;
+		cout << endl;
+	}
+	system("pause");*/
+	//AUX//
+	Nodo* auxNodo = grafo->head;
+	while (auxNodo != nullptr) {
+		cout << "(" << auxNodo->xPos << "," << auxNodo->yPos << ")" << endl;
+		auxNodo = auxNodo->sig;
+	}
+	system("pause");
+	//AUX//
+
 	enemy1 = new Enemy("sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", 288, 96);
 	enemy1->initGrafo(grafo);
 	//player1 = new GameObj("sprites/rightMovement.png", "sprites/leftMovement.png", "sprites/upMovement.png", "sprites/downMovement.png", 32, 32);
@@ -118,7 +140,6 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 
 
 void Game::update() {
-
 	player1->update();
 	enemy1->seekPlayer(player1);
 	enemy1->update();

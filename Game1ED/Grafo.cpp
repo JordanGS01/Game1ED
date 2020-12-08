@@ -168,23 +168,13 @@ bool Grafo::insertaArista(Nodo* src, Nodo* dest, int peso, bool doble,char direc
 void Grafo::inicializaNodosMatriz(int matriz[23][23]) {
 	for (int x = 0; x < 23; x++) {		
 		for (int y = 0; y < 23; y++) {  
-			if (matriz[x][y] == 6) {
+			if (matriz[y][x] == 6) {//ACA
 				insertaNodo(x,y);
 			}
 		}
 	}
 }
 //>>>>>>>AUXILIAR<<<<<<<
-/*void Grafo::inicializaNodosMatriz(int matriz[23][23]) {
-	eliminaMemoriaGrafo();
-	for (int x = 0; x < 23; x++) {
-		for (int y = 0; y < 23; y++) {
-			if (matriz[x][y] == 0) {
-				insertaNodo(x, y);
-			}
-		}
-	}
-}*/
 
 //The next four function iterate throuht the matrix and search for "6" that represent that there has to be a Nodo struct element.
 //The idea is to look in all direction (up,down,right,left) for some adyacent node and insert a Arista struct to the sublist of edges.
@@ -192,12 +182,13 @@ void Grafo::inicializaNodosMatriz(int matriz[23][23]) {
 bool Grafo::adyacentLeft(int x, int y, int matriz[23][23]) {
 	Nodo* auxNodo = buscaNodo(x, y);
 	int peso = 1;
-	int xAux = x;
+	int xAux = x-1;
 	for (xAux; xAux > 0; xAux--) {
+		if (matriz[xAux][y] == 1) { break; }
 		if (matriz[xAux][y] == 6) {
 			return insertaArista(auxNodo, buscaNodo(xAux, y), peso, true,'L');
 		}
-		else if (matriz[xAux][y] == 1) { return false; }
+		//else if (matriz[xAux][y] == 1) { return false; }
 
 		peso++;
 	}
@@ -207,12 +198,13 @@ bool Grafo::adyacentLeft(int x, int y, int matriz[23][23]) {
 bool Grafo::adyacentRight(int x, int y, int matriz[23][23]) {
 	Nodo* auxNodo = buscaNodo(x, y);
 	int peso = 1;
-	int xAux = x;
+	int xAux = x+1;
 	for (xAux; xAux < 22; xAux++) {//22 because there'll be ALWAYS a 1 at the last position of the matrix
+		if (matriz[xAux][y] == 1) { break; }
 		if (matriz[xAux][y] == 6) {
 			return insertaArista(auxNodo, buscaNodo(xAux, y), peso, true,'R');
 		}
-		else if (matriz[xAux][y] == 1) { return false; }
+		//else if (matriz[xAux][y] == 1) { return false; }
 
 		peso++;
 	}
@@ -222,13 +214,13 @@ bool Grafo::adyacentRight(int x, int y, int matriz[23][23]) {
 bool Grafo::adyacentDown(int x, int y, int matriz[23][23]) {
 	Nodo* auxNodo = buscaNodo(x, y);
 	int peso = 1;
-	int yAux = y;
+	int yAux = y+1;
 	for (yAux; yAux < 22; yAux++) {
+		if (matriz[x][yAux] == 1) { break; }
 		if (matriz[x][yAux] == 6) {
 			return insertaArista(auxNodo, buscaNodo(x, yAux), peso, true,'D');
 		}
-		else if (matriz[x][yAux] == 1) { return false; }
-
+		//else if (matriz[x][yAux] == 1) { return false; }
 		peso++;
 	}
 	return false;
@@ -236,13 +228,15 @@ bool Grafo::adyacentDown(int x, int y, int matriz[23][23]) {
 
 bool Grafo::adyacentUp(int x, int y, int matriz[23][23]) {
 	Nodo* auxNodo = buscaNodo(x, y);
+	
 	int peso = 1;
-	int yAux = y;
+	int yAux = y-1;
 	for (yAux; yAux > 0; yAux--) {
+		if (matriz[x][yAux] == 1) { break; }
 		if (matriz[x][yAux] == 6) {
 			return insertaArista(auxNodo, buscaNodo(x, yAux), peso, true,'U');
 		}
-		else if (matriz[x][yAux] == 1) { return false; }
+		//else if (matriz[x][yAux] == 1) { return false; }
 
 		peso++;
 	}
@@ -355,6 +349,15 @@ char Grafo::Dijkstra(Nodo* inicio, Nodo* fin) {//HACE FALTA DEVOLVER EL ARREGLO 
 		}
 	}
 
+	for (int i = 0; i < cantNodos - 1; i++) {
+		cout << "Ruta:  " << endl;
+		//cout << "X= " << ruta[i]->xPos << "Y=" << ruta[i]->yPos << endl;
+		cout << ruta[i] << endl;
+		cout << "Vertice:  " << endl;
+		//cout << "X= " << vertices[i]->xPos << "Y=" << vertices[i]->yPos << endl;
+		cout << vertices[i] << endl;
+	}
+	system("pause");
 	for (int i = 0; i < cantNodos; i++) {
 		if (ruta[i] == inicio) {
 			Nodo* auxNodo = vertices[i];
@@ -382,6 +385,7 @@ char Grafo::Dijkstra(Nodo* inicio, Nodo* fin) {//HACE FALTA DEVOLVER EL ARREGLO 
 						return 'R';
 					}
 				}
+				auxArista = auxArista->sig;
 			}
 		}
 	}

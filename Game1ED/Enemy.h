@@ -26,12 +26,14 @@ public:
 	void seekPlayer(GameObj* player) {
 		if (counterMovement == 8) {
 			counterMovement = 0;
-			nodoActual = grafoMapa->buscaNodo(xpos / 32, ypos / 32);
+			Nodo* auxNodo = grafoMapa->buscaNodo(xpos / 32, ypos / 32);
+			if (auxNodo != nullptr) {
+				nodoActual = auxNodo;
+			}
 		}
 		counterMovement++;
 
 		char dir = grafoMapa->Dijkstra(nodoActual, player->nodoActual);
-		
 		if (dir == 'U') {
 			subYPos();
 			SDL_Delay(30);
