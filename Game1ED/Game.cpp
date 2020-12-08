@@ -14,12 +14,16 @@
 #include "ContRecompensa.h"
 #include "Enemy.h"
 #include "Grafo.h"
-#include "mapsMatrixForGraphs.h"
-
+#include "GameOver.h"
 
 using namespace std;
 //_____________________________________
 //Game objects
+GameOver* fin = new GameOver();
+const char* movimientoDerecha[3] = { "sprites/rightMovement.png","sprites/BelenRight.png","sprites/JordanRight.png" };
+const char* movimientoArriba[3] = { "sprites/upMovement.png","sprites/BelenUp.png","sprites/JordanUp.png" };
+const char* movimientoAbajo[3] = { "sprites/downMovement.png","sprites/BelenDown.png","sprites/JordanDown.png" };
+const char* movimientoIzquierda[3] = { "sprites/leftMovement.png","sprites/BelenLeft.png","sprites/JordanLeft.png" };
 Grafo* grafo = new Grafo();
 GameObj* player1;
 Map* maplv1;//Map of the first level
@@ -29,6 +33,8 @@ ContRecompensa* contadorRecomp;
 SDL_Event Game::event;//To handle the game events.
 SDL_Renderer* Game::renderer = nullptr;
 Enemy* enemy1;
+Enemy* enemy2;
+Enemy* enemy3;
 
 int rec = 0;
 int coordenadas_recompensa[5][2] = { {0,0},{0,0},{0,0},{0,0},{0,0} };
@@ -39,7 +45,7 @@ bool victoria = false;
 Recompensa* recompensas;
 
 //Recives the title of the game, x and y possition in screen of the window, width and height if the window.
-void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen, int nivel) {
+void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen, int nivel,int personaje,int matriz[23][23]) {
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {//If SDL isn't initialized
 		window = SDL_CreateWindow(title, xpos, ypos, width, height, fullscreen);
@@ -52,8 +58,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	}
 
 	if (nivel == 1) {
-		grafo->inicializaNodosMatriz(grafoMlvl1);
-		grafo->inicializaAristasMatriz(grafoMlvl1);
+		grafo->inicializaNodosMatriz(matriz);
+		grafo->inicializaAristasMatriz(matriz);
 		for (int row = 0; row < 23; row++) {
 			for (int column = 0; column < 23; column++) {
 				mapa[row][column] = mlvl1[row][column];
@@ -74,33 +80,17 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 			}
 		}
 	}
-	//AUX//
-	/*Nodo* auxNodo = grafo->head;
-	while (auxNodo != nullptr) {
-		cout << "(" << auxNodo->xPos << "," << auxNodo->yPos << ")";
 
-		Arista* auxArista = auxNodo->aristas;
-		while (auxArista != nullptr) {
-			cout <<" => "<< "(" << auxArista->dest->xPos << "," << auxArista->dest->yPos << ")";
-			auxArista = auxArista->sig;
-		}
-		auxNodo = auxNodo->sig;
-		cout << endl;
-	}
-	system("pause");*/
-	//AUX//
-	Nodo* auxNodo = grafo->head;
-	while (auxNodo != nullptr) {
-		cout << "(" << auxNodo->xPos << "," << auxNodo->yPos << ")" << endl;
-		auxNodo = auxNodo->sig;
-	}
-	system("pause");
-	//AUX//
-
-	enemy1 = new Enemy("sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", 288, 96);
+	//enemy1 = new Enemy("sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", 672, 608);
+	enemy1 = new Enemy("sprites/minotauro.jpg", "sprites/minotauro.jpg", "sprites/minotauro.jpg", "sprites/minotauro.jpg", 32, 672);
 	enemy1->initGrafo(grafo);
-	//player1 = new GameObj("sprites/rightMovement.png", "sprites/leftMovement.png", "sprites/upMovement.png", "sprites/downMovement.png", 32, 32);
-	player1 = new GameObj("sprites/JordanRight.png", "sprites/JordanLeft.png", "sprites/JordanUp.png", "sprites/JordanDown.png", 32, 32);
+	//enemy2 = new Enemy("sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", 416, 544);
+	enemy2 = new Enemy("sprites/minotauro.jpg", "sprites/minotauro.jpg", "sprites/minotauro.jpg", "sprites/minotauro.jpg", 672, 32);
+	enemy2->initGrafo(grafo);
+	//enemy3 = new Enemy("sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", 352, 352);
+	enemy3 = new Enemy("sprites/minotauro2.jpg", "sprites/minotauro2.jpg", "sprites/minotauro2.jpg", "sprites/minotauro2.jpg", 672, 672);
+	enemy3->initGrafo(grafo);
+	player1 = new GameObj(movimientoDerecha[personaje - 1], movimientoIzquierda[personaje - 1], movimientoArriba[personaje - 1], movimientoAbajo[personaje - 1], 32, 32);
 	player1->initGrafo(grafo);
 	maplv1 = new Map(muros[nivel - 1], pisos[nivel - 1]);
 	vidas = new Life("sprites/corazones.png", 520, 690);
@@ -141,9 +131,18 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 
 void Game::update() {
 	player1->update();
+
 	enemy1->seekPlayer(player1);
 	enemy1->update();
 	enemy1->killPlayer(player1->getXPos(),player1->getYPos(),player1);
+
+	enemy2->seekPlayer(player1);
+	enemy2->update();
+	enemy2->killPlayer(player1->getXPos(), player1->getYPos(), player1);
+
+	enemy3->seekPlayer(player1);
+	enemy3->update();
+	enemy3->killPlayer(player1->getXPos(), player1->getYPos(), player1);
 
 	if (player1->life == 3) {
 		vidas->srcY = 0;
@@ -156,6 +155,14 @@ void Game::update() {
 	}
 	if (player1->life == 0) {
 		vidas->srcY = 192;
+
+		Game::isRunning = false;
+		fin->init("Dungeon WarRunners", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 736, 736, 0);
+		while (fin->running()) {
+			fin->dibujar();
+			fin->cerrar();
+		}
+		fin->clean();
 	}
 	vidas->update();
 	
@@ -191,6 +198,8 @@ void Game::render() {
 
 	player1->render();
 	enemy1->render();
+	enemy2->render();
+	enemy3->render();
 
 	vidas->render();
 	contadorRecomp->render();
@@ -215,6 +224,7 @@ void Game::handleEvents() {
 				player1->addXPos();
 				player1->setRightToMain();//Change of thexture.
 				player1->addYsrc();//Move across the sprite sheet
+				player1->posR++;
 				recompensas->comprobarRecompensa(player1->getXPos(), player1->getYPos(), coordenadas_recompensa, mapa, recompensas);
 				if (recompensas->num_recompensas == 0) {
 					victoria = true;
@@ -223,8 +233,9 @@ void Game::handleEvents() {
 					victoria = false;
 					recompensas->num_recompensas = 5;
 					Game::isRunning = false;
+					Game::cerrado = false;
 				}
-				SDL_Delay(30);
+				SDL_Delay(7);
 			}
 			break;
 
@@ -233,6 +244,7 @@ void Game::handleEvents() {
 				player1->subXPos();
 				player1->setLeftToMain();//Change of texture.
 				player1->addYsrc();//Move across the sprite sheet
+				player1->posL++;
 				recompensas->comprobarRecompensa(player1->getXPos(), player1->getYPos(), coordenadas_recompensa, mapa, recompensas);
 				if (recompensas->num_recompensas == 0) {
 					victoria = true;
@@ -241,8 +253,9 @@ void Game::handleEvents() {
 					victoria = false;
 					recompensas->num_recompensas = 5;
 					Game::isRunning = false;
+					Game::cerrado = false;
 				}
-				SDL_Delay(30);
+				SDL_Delay(7);
 			}
 			break;
 
@@ -251,6 +264,7 @@ void Game::handleEvents() {
 				player1->subYPos();
 				player1->setUpToMain();
 				player1->addYsrc();//Move across the sprite sheet.
+				player1->posU++;
 				recompensas->comprobarRecompensa(player1->getXPos(), player1->getYPos(), coordenadas_recompensa, mapa, recompensas);
 				if (recompensas->num_recompensas == 0) {
 					victoria = true;
@@ -259,8 +273,9 @@ void Game::handleEvents() {
 					victoria = false;
 					recompensas->num_recompensas = 5;
 					Game::isRunning = false;
+					Game::cerrado = false;
 				}
-				SDL_Delay(30);
+				SDL_Delay(7);
 
 			}
 			break;
@@ -270,6 +285,7 @@ void Game::handleEvents() {
 				player1->addYPos();
 				player1->setDownToMain();
 				player1->addYsrc();//Move across the sprite sheet.
+				player1->posD++;
 				recompensas->comprobarRecompensa(player1->getXPos(), player1->getYPos(), coordenadas_recompensa, mapa, recompensas);
 				if (recompensas->num_recompensas == 0) {
 					victoria = true;
@@ -278,8 +294,9 @@ void Game::handleEvents() {
 					victoria = false;
 					recompensas->num_recompensas = 5;
 					Game::isRunning = false;
+					Game::cerrado = false;
 				}
-				SDL_Delay(30);
+				SDL_Delay(7);
 			}
 			break;
 

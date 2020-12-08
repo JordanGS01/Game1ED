@@ -38,7 +38,36 @@ void GameObj::update() {
 	destRect.w = 32;
 	destRect.x = xpos;
 	destRect.y = ypos;
-
+	
+	if (posD == 8) {
+		posD = 0;
+		Nodo* auxNodo = grafoMapa->buscaNodo(xpos / 32, ypos / 32);
+		if (auxNodo != nullptr) {
+			nodoActual = auxNodo;
+		}
+	}
+	else if (posL == 8) {
+		posL = 0;
+		Nodo* auxNodo = grafoMapa->buscaNodo(xpos / 32, ypos / 32);
+		if (auxNodo != nullptr) {
+			nodoActual = auxNodo;
+		}
+	}
+	else if (posR == 8) {
+		posR = 0;
+		Nodo* auxNodo = grafoMapa->buscaNodo(xpos / 32, ypos / 32);
+		if (auxNodo != nullptr) {
+			nodoActual = auxNodo;
+		}
+	}
+	
+	else if (posU == 8) {
+		posU = 0;
+		Nodo* auxNodo = grafoMapa->buscaNodo(xpos / 32, ypos / 32);
+		if (auxNodo != nullptr) {
+			nodoActual = auxNodo;
+		}
+	}
 }
 
 void GameObj::render() {

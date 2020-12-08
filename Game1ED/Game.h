@@ -10,7 +10,7 @@ class Game {
 
 public:
 
-	void init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen, int nivel);//Initialice the game object
+	void init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen, int nivel,int personaje,int matriz[23][23]);//Initialice the game object
 	void update();//Update the changes that the game is having during process
 	void render();//Renderer of the game
 	void clean();//For clean the memory
@@ -19,6 +19,8 @@ public:
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
+
+	bool cerrado = true;
 private:
 	bool isRunning;
 	SDL_Window* window;

@@ -1,7 +1,11 @@
 #include <iostream>
 #include "Game.h"
 #include "time.h"
+#include "Interfaz.h"
+#include "mapsMatrixForGraphs.h"
+
 Game* game = NULL;
+int personaje;
 int main(int argc, char* argv[]) {
 	srand(time(NULL));
 	//Variables
@@ -11,13 +15,25 @@ int main(int argc, char* argv[]) {
 
 	Uint32 frameS;
 	int frameT;
-
+	interfaz* inter = new interfaz();
+	inter->init("Dungeon WarRunners", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 736, 736, 0);
+	while (inter->running() == true) {
+		inter->dibujar();
+		inter->eventos();
+	}
+	personaje = inter->respuesta;
+	inter->clean();
+	if (inter->cerrado == true) {
+		SDL_Quit();
+		return 0;
+	}
 	//Created classes.
 	Game* game = new Game();
 
 	//Game inicialization.
-	game->init("Dungeon WarRunners", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 736, 736, 0, 1);
+	game->init("Dungeon WarRunners", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 736, 736, 0, 1, personaje,grafoMlvl1);
 	//Main loop of the game.
+
 	while (game->running()) {
 
 		frameS = SDL_GetTicks();//To handle delay
@@ -32,12 +48,18 @@ int main(int argc, char* argv[]) {
 			SDL_Delay(frameDelay - frameT);
 		}
 	}
+
+
 	game->clean();
+	if (game->cerrado == true) {
+		SDL_Quit();
+		return 0;
+	}
+	//Created classes.
+	Game* game2 = new Game();
 
-
-	/*Game* game2 = new Game();
 	//Game inicialization.
-	game2->init("Dungeon WarRunners", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 736, 736, 0, 2);
+	game2->init("Dungeon WarRunners", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 736, 736, 0, 2, personaje,grafoMlvl2);
 	//Main loop of the game.
 	while (game2->running()) {
 
@@ -53,10 +75,16 @@ int main(int argc, char* argv[]) {
 			SDL_Delay(frameDelay - frameT);
 		}
 	}
-	game2->clean();*/
 
-	/*Game* game3 = new Game();
-	game3->init("Dungeon WarRunners", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 736, 736, 0, 3);
+
+	game2->clean();
+	if (game2->cerrado == true) {
+		SDL_Quit();
+
+		return 0;
+	}
+	Game* game3 = new Game();
+	game3->init("Dungeon WarRunners", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 736, 736, 0, 3, personaje,grafoMlvl3);
 	//Main loop of the game.
 	while (game3->running()) {
 
@@ -74,7 +102,7 @@ int main(int argc, char* argv[]) {
 	}
 
 
-	game3->clean();*/
+	game3->clean();
 	SDL_Quit();
 	return 0;
 }

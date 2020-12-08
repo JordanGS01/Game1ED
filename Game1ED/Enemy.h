@@ -15,7 +15,7 @@ public:
 
 	//This function helps to know if the Enemy object is on the same position of the player.
 	void killPlayer(int x, int y, GameObj* player) {
-		if ((x == getXPos()) && (y == getYPos())) {
+		if (((x == getXPos()) && (y == getYPos())) || (x+4 == getXPos()) && (y+4 == getYPos()) || (x-4 == getXPos()) && (y-4 == getYPos()) || (x+4 == getXPos()) && (y-4 == getYPos()) || (x-4 == getXPos()) && (y+4 == getYPos()))  {
 			player->life -= 1;
 			player->xpos = player->initPosX;
 			player->ypos = player->initPosY;
@@ -36,19 +36,19 @@ public:
 		char dir = grafoMapa->Dijkstra(nodoActual, player->nodoActual);
 		if (dir == 'U') {
 			subYPos();
-			SDL_Delay(30);
+			SDL_Delay(7);
 		}
 		else if(dir == 'D') {
 			addYPos();
-			SDL_Delay(30);
+			SDL_Delay(7);
 		}
 		else if(dir == 'L') {
 			subXPos();
-			SDL_Delay(30);
+			SDL_Delay(7);
 		}
 		else {
 			addXPos();
-			SDL_Delay(30);
+			SDL_Delay(7);
 		}
 	}
 };

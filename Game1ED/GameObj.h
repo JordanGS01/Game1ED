@@ -10,6 +10,11 @@
 class GameObj { //: public GameObject{
 
 public:
+	int posL;
+	int posR;
+	int posD;
+	int posU;
+
 	GameObj(const char* rightSheet, const char* leftSheet, const char* upSheet, const char* downSheet, int xpos, int ypos);//Constructor
 	~GameObj();//Destructor
 
