@@ -75,25 +75,33 @@ Se creó una matriz de 23x23 para manejar el pintado del laberinto, siendo un va
   
   El personaje se genera inmóvil,y cuando se mueve procede a animarse,para ello se recorre la estructura de datos correspondiente al sprite de personaje y se anima mediante de ticks, para el desplazamiento se alteran los valores de la posición "x" y "y" presentes en la estructura de datos SDL_Rect. 
 
-  **Interfaz**
+ **Interfaz** 
+  
     Se creó una ventana de SDL que se encarga de representar el titulo del juego y los 3 posible personajes jugables, en la pantalla de la interfaz el jugador  procede a seleccionar el personaje con el que este procedera a jugar el videojuego.
-   **Pantalla de Game Over**
+ **Pantalla de Game Over**
+   
    Se creo una pantalla que inicia el fin del juego cuando al jugador no le quedan vidas, esta cierra el juego y se encarga de indicar el fin del juego.
-   **Colision de muros**
+   
+ **Colision de muros**
+   
    Se creo un código capaz de obtener la posicion exacta del jugador y comparar con su adyacente en la matriz para asi determinar si habia o no un lugar en el cual no haya colision.
-   **Contador de recompensas**
+ **Contador de recompensas**
+   
    Se creo un algoritmo que trabaja con el numero de recompensas para así entender el numero que de recompensas restantes y determinar la victoria del jugador.
-   **Puerta**
+   
+ **Puerta**
+   
    Objeto que se abre cuando se determina que se juntaron todas las recompensas, esta cierra el nivel actual e inicia el siguiente solamente cuando el jugador junta todas las recompensas, en caso contrario esta no se abre y no permite que este continue con el siguiente nivel.
    
    
-   **Contador De vidas** 
+ **Contador De vidas** 
+   
    Se cuentan las vidas actuales de un jugador y se agregan a un marcador, estas se actualizan conforme el jugador pierda vidas.
    
-   **Texturas**
+ **Texturas**
    Se crean clases para la impresion de texturas, adaptadas para la escritura de  texto en sdl y tanto como en la ventana de game over , como en la interfaz.
    
-   **Metodos de Grafos**
+ **Metodos de Grafos**
    Se dio la implementacion de metodos encargados del manejo de grafos, para la insercion, busqueda, tanto de nodos como de ejes.
 ## Analisis de resultados
 Se logro con éxito al implementación de movimiento, animación, y el pintado del laberinto, los personajes pueden reconocer con exito las recompensas, asi como la implementación de
