@@ -31,7 +31,7 @@ Viaja a traves de masmorras, bosques y mucho más en el mundo de Ogstrap, elimin
 ## Tipo de juego Creado
   Se procedio a realizar un juego con dinámica de laberinto, De manera similar a juegos como pac-man donde el objetivo es recolectar cristales, para asi abrir la puerta y proceder al siguiente nivel, mientras se es perseguido por los minotauros que custodian el laberinto, donde el objetivo es encontrar los cristales evitando que estos te atrapen.
 ## Principales estructuras de datos creadas
- ##Fase 1
+
 **Matriz para pintado del mapa**
 
 Se creó una matriz de 23x23 para manejar el pintado del laberinto, siendo un valor 0 para una casilla, y un valor 1 para una pared.
@@ -74,7 +74,7 @@ Se creó una matriz de 23x23 para manejar el pintado del laberinto, siendo un va
   **Personajes,animación y movimiento**
   
   El personaje se genera inmóvil,y cuando se mueve procede a animarse,para ello se recorre la estructura de datos correspondiente al sprite de personaje y se anima mediante de ticks, para el desplazamiento se alteran los valores de la posición "x" y "y" presentes en la estructura de datos SDL_Rect. 
-  ##Fase 2
+
   **Interfaz**
     Se creó una ventana de SDL que se encarga de representar el titulo del juego y los 3 posible personajes jugables, en la pantalla de la interfaz el jugador  procede a seleccionar el personaje con el que este procedera a jugar el videojuego.
    **Pantalla de Game Over**
