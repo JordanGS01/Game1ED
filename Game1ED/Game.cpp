@@ -15,8 +15,16 @@
 #include "Enemy.h"
 #include "Grafo.h"
 #include "GameOver.h"
+#include <fstream>
 
 using namespace std;
+
+void save();
+void loadPlayer();
+void loadPrizes();
+void loadEnemy1();
+void loadEnemy3();
+
 //_____________________________________
 //Game objects
 GameOver* fin = new GameOver();
@@ -33,7 +41,6 @@ ContRecompensa* contadorRecomp;
 SDL_Event Game::event;//To handle the game events.
 SDL_Renderer* Game::renderer = nullptr;
 Enemy* enemy1;
-Enemy* enemy2;
 Enemy* enemy3;
 
 int rec = 0;
@@ -46,6 +53,9 @@ Recompensa* recompensas;
 
 //Recives the title of the game, x and y possition in screen of the window, width and height if the window.
 void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen, int nivel,int personaje,int matriz[23][23]) {
+	//Saving the important information we need to initialize the Game object
+	this->level = nivel;
+	this->player = personaje;
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {//If SDL isn't initialized
 		window = SDL_CreateWindow(title, xpos, ypos, width, height, fullscreen);
@@ -56,8 +66,10 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	else {//If there's some problem, we didn't initialize anything.
 		isRunning = false;
 	}
+	SDL_Init(SDL_INIT_EVERYTHING);
+	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4048);
 
-	if (nivel == 1) {
+	if (this->level == 1) {
 		grafo->inicializaNodosMatriz(matriz);
 		grafo->inicializaAristasMatriz(matriz);
 		for (int row = 0; row < 23; row++) {
@@ -66,14 +78,18 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 			}
 		}
 	}
-	else if (nivel == 2) {
+	else if (this->level == 2) {
+		grafo->inicializaNodosMatriz(matriz);
+		grafo->inicializaAristasMatriz(matriz);
 		for (int row = 0; row < 23; row++) {
 			for (int column = 0; column < 23; column++) {
 				mapa[row][column] = mlvl2[row][column];
 			}
 		}
 	}
-	else if (nivel == 3) {
+	else if (this->level == 3) {
+		grafo->inicializaNodosMatriz(matriz);
+		grafo->inicializaAristasMatriz(matriz);
 		for (int row = 0; row < 23; row++) {
 			for (int column = 0; column < 23; column++) {
 				mapa[row][column] = mlvl3[row][column];
@@ -81,21 +97,58 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 		}
 	}
 
-	//enemy1 = new Enemy("sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", 672, 608);
-	enemy1 = new Enemy("sprites/minotauro.jpg", "sprites/minotauro.jpg", "sprites/minotauro.jpg", "sprites/minotauro.jpg", 32, 672);
-	enemy1->initGrafo(grafo);
-	//enemy2 = new Enemy("sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", 416, 544);
-	enemy2 = new Enemy("sprites/minotauro.jpg", "sprites/minotauro.jpg", "sprites/minotauro.jpg", "sprites/minotauro.jpg", 672, 32);
-	enemy2->initGrafo(grafo);
-	//enemy3 = new Enemy("sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", 352, 352);
-	enemy3 = new Enemy("sprites/minotauro2.jpg", "sprites/minotauro2.jpg", "sprites/minotauro2.jpg", "sprites/minotauro2.jpg", 672, 672);
-	enemy3->initGrafo(grafo);
-	player1 = new GameObj(movimientoDerecha[personaje - 1], movimientoIzquierda[personaje - 1], movimientoArriba[personaje - 1], movimientoAbajo[personaje - 1], 32, 32);
-	player1->initGrafo(grafo);
+
+	enemy1 = new Enemy("sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", "sprites/minotauro.png", 32, 672);
+	enemy3 = new Enemy("sprites/minotauro2.png", "sprites/minotauro2.png", "sprites/minotauro2.png", "sprites/minotauro2.png", 672, 672);
+	player1 = new GameObj(movimientoDerecha[this->player - 1], movimientoIzquierda[this->player - 1], movimientoArriba[this->player - 1], movimientoAbajo[this->player - 1], 32, 32);
+	player1->deadSound = SoundManager::chargeWAV("sounds/death.wav");
+	player1->apearSound = SoundManager::chargeWAV("sounds/beggining.wav");
 	maplv1 = new Map(muros[nivel - 1], pisos[nivel - 1]);
 	vidas = new Life("sprites/corazones.png", 520, 690);
 	contadorRecomp = new ContRecompensa("sprites/numeros.png", "sprites/oro.png", 590, 685, 630, 690);
-	srand((unsigned)time(0));
+
+	recompensas = new Recompensa("sounds/reward.wav", coordenadas_recompensa);
+
+	if (this->loaded) {
+		/*player1 = new GameObj();
+		enemy1 = new Enemy();
+		enemy3 = new Enemy();*/
+		this->loadPlayer();
+		/*loadEnemy1();
+		loadEnemy3();*/
+		this->loadPrizes();
+	}
+	else {
+		enemy1->initGrafo(grafo);
+		enemy3->initGrafo(grafo);
+		player1->initGrafo(grafo);
+
+		
+		srand((unsigned)time(0));
+
+		int random;
+		while (rec < 5) {
+			for (int row = 0; row < 23; row++) {
+				for (int column = 0; column < 23; column++) {
+					random = rand() % 100;
+					if (random < 1 && mapa[row][column] == 0) {
+						mapa[row][column] = 2;
+						coordenadas_recompensa[rec][0] = column * 32;
+						coordenadas_recompensa[rec][1] = row * 32;
+						rec++;
+					}
+					if (rec >= 5) {
+						break;
+					}
+				}
+			}
+		}
+		rec = 0;
+		recompensas->num_recompensas = 5;
+
+	}
+
+	/*srand((unsigned)time(0));
 
 	int random;
 	while (rec < 5) {
@@ -114,16 +167,11 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 			}
 		}
 	}
-	rec = 0;
+	rec = 0;*/
 
 	//Aca se inicializara todo lo referente a sonidos
-	SDL_Init(SDL_INIT_EVERYTHING);
-	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4048);
-
-	recompensas = new Recompensa("sounds/reward.wav", coordenadas_recompensa);
-	recompensas->num_recompensas = 5;
-	player1->deadSound = SoundManager::chargeWAV("sounds/death.wav");
-	player1->apearSound = SoundManager::chargeWAV("sounds/beggining.wav");
+	/*SDL_Init(SDL_INIT_EVERYTHING);
+	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4048);*/
 
 	SoundManager::playChunk(player1->apearSound);
 };
@@ -132,18 +180,14 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 void Game::update() {
 	player1->update();
 
-	enemy1->seekPlayer(player1);
-	enemy1->update();
+	/*enemy1->seekPlayer(player1);
+	enemy1->enemyUpdate();
 	enemy1->killPlayer(player1->getXPos(),player1->getYPos(),player1);
 
-	enemy2->seekPlayer(player1);
-	enemy2->update();
-	enemy2->killPlayer(player1->getXPos(), player1->getYPos(), player1);
-
 	enemy3->seekPlayer(player1);
-	enemy3->update();
-	enemy3->killPlayer(player1->getXPos(), player1->getYPos(), player1);
-
+	enemy3->enemyUpdate();
+	enemy3->killPlayer(player1->getXPos(), player1->getYPos(), player1);*/
+	
 	if (player1->life == 3) {
 		vidas->srcY = 0;
 	}
@@ -189,7 +233,6 @@ void Game::update() {
 	maplv1->loadMap(mapa);
 };
 
-
 void Game::render() {
 	SDL_RenderClear(renderer);//Clear the renderer of anything
 
@@ -197,9 +240,8 @@ void Game::render() {
 	maplv1->drawMap(victoria);
 
 	player1->render();
-	enemy1->render();
-	enemy2->render();
-	enemy3->render();
+	/*enemy1->render();
+	enemy3->render();*/
 
 	vidas->render();
 	contadorRecomp->render();
@@ -218,6 +260,9 @@ void Game::handleEvents() {
 	case SDL_KEYDOWN:
 		switch (event.key.keysym.sym)
 		{
+		case SDLK_1:
+			this->save();
+			break;
 
 		case SDLK_RIGHT://Press the keyboard right arrow.
 			if (player1->getXPos() < 704 && colision->comprobarMuroderecha(player1->getXPos(), player1->getYPos(), mapa) == false) {
@@ -235,7 +280,7 @@ void Game::handleEvents() {
 					Game::isRunning = false;
 					Game::cerrado = false;
 				}
-				SDL_Delay(7);
+				//SDL_Delay(7);
 			}
 			break;
 
@@ -255,7 +300,7 @@ void Game::handleEvents() {
 					Game::isRunning = false;
 					Game::cerrado = false;
 				}
-				SDL_Delay(7);
+				//SDL_Delay(7);
 			}
 			break;
 
@@ -275,7 +320,7 @@ void Game::handleEvents() {
 					Game::isRunning = false;
 					Game::cerrado = false;
 				}
-				SDL_Delay(7);
+				//SDL_Delay(7);
 
 			}
 			break;
@@ -296,7 +341,7 @@ void Game::handleEvents() {
 					Game::isRunning = false;
 					Game::cerrado = false;
 				}
-				SDL_Delay(7);
+				//SDL_Delay(7);
 			}
 			break;
 
@@ -313,3 +358,544 @@ void Game::clean() {//Clean the memory from every information created by the pro
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 };
+
+
+
+
+//Function used to save all the information of the object in a binary file
+void Game::save() {
+	
+	if (this->getGameSlot() == 1) {
+		ofstream file("archives/s1/Player.bin", ios::binary);
+		if (!file.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file.write((char*)&player1->xpos, sizeof(int));
+			file.write((char*)&player1->ypos, sizeof(int));
+			file.close();
+		}
+
+		ofstream file2("archives/s1/Enemy1.bin", ios::binary);
+		if (!file2.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file2.write((char*)&enemy1->xpos, sizeof(int));
+			file2.write((char*)&enemy1->ypos, sizeof(int));
+			file2.close();
+		}
+
+		ofstream file3("archives/s1/Enemy3.bin", ios::binary);
+		if (!file3.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file3.write((char*)&enemy3->xpos, sizeof(int));
+			file3.write((char*)&enemy3->ypos, sizeof(int));
+			file3.close();
+		}
+
+		ofstream file4("archives/s1/Prizes.bin", ios::binary);
+		if (!file4.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file4.write((char*)&coordenadas_recompensa, sizeof(int[5][2]));
+			file4.write((char*)&mapa, sizeof(int[23][23]));
+			file4.write((char*)&rec, sizeof(int));
+			file4.write((char*)&recompensas->num_recompensas, sizeof(int));
+			file4.close();
+		}
+	}
+
+	else if (this->getGameSlot() == 2) {
+		ofstream file("archives/s2/Player.bin", ios::binary);
+		if (!file.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file.write((char*)&player1->xpos, sizeof(int));
+			file.write((char*)&player1->ypos, sizeof(int));
+			file.close();
+		}
+
+		ofstream file2("archives/s2/Enemy1.bin", ios::binary);
+		if (!file2.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file2.write((char*)&enemy1->xpos, sizeof(int));
+			file2.write((char*)&enemy1->ypos, sizeof(int));
+			file2.close();
+		}
+
+		ofstream file3("archives/s2/Enemy3.bin", ios::binary);
+		if (!file3.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file3.write((char*)&enemy3->xpos, sizeof(int));
+			file3.write((char*)&enemy3->ypos, sizeof(int));
+			file3.close();
+		}
+
+		ofstream file4("archives/s2/Prizes.bin", ios::binary);
+		if (!file4.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file4.write((char*)&coordenadas_recompensa, sizeof(int[5][2]));
+			file4.write((char*)&mapa, sizeof(int[23][23]));
+			file4.write((char*)&rec, sizeof(int));
+			file4.write((char*)&recompensas->num_recompensas, sizeof(int));
+			file4.close();
+		}
+	}
+
+	else if (this->getGameSlot() == 3) {
+		ofstream file("archives/s3/Player.bin", ios::binary);
+		if (!file.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file.write((char*)&player1->xpos, sizeof(int));
+			file.write((char*)&player1->ypos, sizeof(int));
+			file.close();
+		}
+
+		ofstream file2("archives/s3/Enemy1.bin", ios::binary);
+		if (!file2.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file2.write((char*)&enemy1->xpos, sizeof(int));
+			file2.write((char*)&enemy1->ypos, sizeof(int));
+			file2.close();
+		}
+
+		ofstream file3("archives/s3/Enemy3.bin", ios::binary);
+		if (!file3.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file3.write((char*)&enemy3->xpos, sizeof(int));
+			file3.write((char*)&enemy3->ypos, sizeof(int));
+			file3.close();
+		}
+
+		ofstream file4("archives/s3/Prizes.bin", ios::binary);
+		if (!file4.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file4.write((char*)&coordenadas_recompensa, sizeof(int[5][2]));
+			file4.write((char*)&mapa, sizeof(int[23][23]));
+			file4.write((char*)&rec, sizeof(int));
+			file4.write((char*)&recompensas->num_recompensas, sizeof(int));
+			file4.close();
+		}
+	}
+
+	else {
+		ofstream file("archives/s4/Player.bin", ios::binary);
+		if (!file.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file.write((char*)&player1->xpos, sizeof(int));
+			file.write((char*)&player1->ypos, sizeof(int));
+			file.close();
+		}
+
+		ofstream file2("archives/s4/Enemy1.bin", ios::binary);
+		if (!file2.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file2.write((char*)&enemy1->xpos, sizeof(int));
+			file2.write((char*)&enemy1->ypos, sizeof(int));
+			file2.close();
+		}
+
+		ofstream file3("archives/s4/Enemy3.bin", ios::binary);
+		if (!file3.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file3.write((char*)&enemy3->xpos, sizeof(int));
+			file3.write((char*)&enemy3->ypos, sizeof(int));
+			file3.close();
+		}
+
+		ofstream file4("archives/s4/Prizes.bin", ios::binary);
+		if (!file4.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file4.write((char*)&coordenadas_recompensa, sizeof(int[5][2]));
+			file4.write((char*)&mapa, sizeof(int[23][23]));
+			file4.write((char*)&rec, sizeof(int));
+			file4.write((char*)&recompensas->num_recompensas, sizeof(int));
+			file4.close();
+		}
+	}
+}
+
+//Function used to load all the information of the object in a binary file
+void Game::loadPlayer() {
+	
+	if (this->getGameSlot() == 1) {
+		ifstream file("archives/s1/Player.bin", ios::in || ios::binary);
+		if (!file.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file.seekg(0);
+			int x = 0;
+			int y = 0;
+
+			file.read((char*)&x, sizeof(int));
+			file.read((char*)&y, sizeof(int));
+			file.close();
+
+			player1->xpos = x;
+			player1->ypos = y;
+			player1->initGrafo(grafo);
+		}
+	}
+
+	else if (this->getGameSlot() == 2) {
+		ifstream file("archives/s2/Player.bin", ios::in || ios::binary);
+		if (!file.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file.seekg(0);
+			int x = 0;
+			int y = 0;
+
+			file.read((char*)&x, sizeof(int));
+			file.read((char*)&y, sizeof(int));
+			file.close();
+
+			player1->xpos = x;
+			player1->ypos = y;
+			player1->initGrafo(grafo);
+		}
+	}
+
+	else if (this->getGameSlot() == 3) {
+		ifstream file("archives/s3/Player.bin", ios::in || ios::binary);
+		if (!file.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file.seekg(0);
+			int x = 0;
+			int y = 0;
+
+			file.read((char*)&x, sizeof(int));
+			file.read((char*)&y, sizeof(int));
+			file.close();
+
+			player1->xpos = x;
+			player1->ypos = y;
+			player1->initGrafo(grafo);
+		}
+	}
+
+	else {
+		ifstream file("archives/s4/Player.bin", ios::in || ios::binary);
+		if (!file.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file.seekg(0);
+			int x = 0;
+			int y = 0;
+
+			file.read((char*)&x, sizeof(int));
+			file.read((char*)&y, sizeof(int));
+			file.close();
+
+			player1->xpos = x;
+			player1->ypos = y;
+			player1->initGrafo(grafo);
+		}
+	}
+}
+
+void Game::loadEnemy1() {
+	
+	if (this->getGameSlot() == 1) {
+		ifstream file2("archives/s1/Enemy1.bin", ios::in || ios::binary);
+		if (!file2.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file2.seekg(0);
+			int x = 0;
+			int y = 0;
+			file2.read((char*)&x, sizeof(int));
+			file2.read((char*)&y, sizeof(int));
+			file2.close();
+
+			enemy1->initGrafo(grafo);
+			enemy1->xpos = x;
+			enemy1->ypos = y;
+		}
+	}
+
+	else if (this->getGameSlot() == 2) {
+		ifstream file2("archives/s2/Enemy1.bin", ios::in || ios::binary);
+		if (!file2.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file2.seekg(0);
+			int x = 0;
+			int y = 0;
+			file2.read((char*)&x, sizeof(int));
+			file2.read((char*)&y, sizeof(int));
+			file2.close();
+
+			enemy1->initGrafo(grafo);
+			enemy1->xpos = x;
+			enemy1->ypos = y;
+		}
+	}
+
+	else if (this->getGameSlot() == 3) {
+		ifstream file2("archives/s3/Enemy1.bin", ios::in || ios::binary);
+		if (!file2.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file2.seekg(0);
+			int x = 0;
+			int y = 0;
+			file2.read((char*)&x, sizeof(int));
+			file2.read((char*)&y, sizeof(int));
+			file2.close();
+
+			enemy1->initGrafo(grafo);
+			enemy1->xpos = x;
+			enemy1->ypos = y;
+		}
+	}
+
+	else {
+		ifstream file2("archives/s4/Enemy1.bin", ios::in || ios::binary);
+		if (!file2.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file2.seekg(0);
+			int x = 0;
+			int y = 0;
+			file2.read((char*)&x, sizeof(int));
+			file2.read((char*)&y, sizeof(int));
+			file2.close();
+
+			enemy1->initGrafo(grafo);
+			enemy1->xpos = x;
+			enemy1->ypos = y;
+		}
+	}
+}
+
+void Game::loadEnemy3() {
+	
+	if (this->getGameSlot() == 1) {
+		ifstream file3("archives/s1/Enemy3.bin", ios::in || ios::binary);
+		if (!file3.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file3.seekg(0);
+			int x = 0;
+			int y = 0;
+			file3.read((char*)&x, sizeof(int));
+			file3.read((char*)&y, sizeof(int));
+			file3.close();
+
+			enemy3->xpos = x;
+			enemy3->ypos = y;
+			enemy3->initGrafo(grafo);
+		}
+	}
+
+	else if (this->getGameSlot() == 2) {
+		ifstream file3("archives/s2/Enemy3.bin", ios::in || ios::binary);
+		if (!file3.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file3.seekg(0);
+			int x = 0;
+			int y = 0;
+			file3.read((char*)&x, sizeof(int));
+			file3.read((char*)&y, sizeof(int));
+			file3.close();
+
+			enemy3->xpos = x;
+			enemy3->ypos = y;
+			enemy3->initGrafo(grafo);
+		}
+	}
+
+	else if (this->getGameSlot() == 3) {
+		ifstream file3("archives/s3/Enemy3.bin", ios::in || ios::binary);
+		if (!file3.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file3.seekg(0);
+			int x = 0;
+			int y = 0;
+			file3.read((char*)&x, sizeof(int));
+			file3.read((char*)&y, sizeof(int));
+			file3.close();
+
+			enemy3->xpos = x;
+			enemy3->ypos = y;
+			enemy3->initGrafo(grafo);
+		}
+	}
+
+	else {
+		ifstream file3("archives/s4/Enemy3.bin", ios::in || ios::binary);
+		if (!file3.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file3.seekg(0);
+			int x = 0;
+			int y = 0;
+			file3.read((char*)&x, sizeof(int));
+			file3.read((char*)&y, sizeof(int));
+			file3.close();
+
+			enemy3->xpos = x;
+			enemy3->ypos = y;
+			enemy3->initGrafo(grafo);
+		}
+	}
+}
+
+void Game::loadPrizes() {
+	if (this->getGameSlot() == 1) {
+		ifstream file4("archives/s1/Prizes.bin", ios::in || ios::binary);
+		if (!file4.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file4.seekg(0);
+			file4.read((char*)&coordenadas_recompensa, sizeof(int[5][2]));
+			file4.read((char*)*mapa, sizeof(int[23][23]));
+			file4.read((char*)&rec, sizeof(int));
+			file4.read((char*)&recompensas->num_recompensas, sizeof(int));
+			file4.close();
+		}
+	}
+
+	else if (this->getGameSlot() == 2) {
+		ifstream file4("archives/s2/Prizes.bin", ios::in || ios::binary);
+		if (!file4.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file4.seekg(0);
+			file4.read((char*)&coordenadas_recompensa, sizeof(int[5][2]));
+			file4.read((char*)*mapa, sizeof(int[23][23]));
+			file4.read((char*)&rec, sizeof(int));
+			file4.read((char*)&recompensas->num_recompensas, sizeof(int));
+			file4.close();
+		}
+	}
+
+	else if (this->getGameSlot() == 3) {
+		ifstream file4("archives/s3/Prizes.bin", ios::in || ios::binary);
+		if (!file4.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file4.seekg(0);
+			file4.read((char*)&coordenadas_recompensa, sizeof(int[5][2]));
+			file4.read((char*)*mapa, sizeof(int[23][23]));
+			file4.read((char*)&rec, sizeof(int));
+			file4.read((char*)&recompensas->num_recompensas, sizeof(int));
+			file4.close();
+		}
+	}
+
+	else {
+		ifstream file4("archives/s4/Prizes.bin", ios::in || ios::binary);
+		if (!file4.is_open()) {
+			cout << "There is an error. The file cannot be opened" << endl;
+			return;
+		}
+		else {
+			file4.seekg(0);
+			file4.read((char*)&coordenadas_recompensa, sizeof(int[5][2]));
+			file4.read((char*)*mapa, sizeof(int[23][23]));
+			file4.read((char*)&rec, sizeof(int));
+			file4.read((char*)&recompensas->num_recompensas, sizeof(int));
+			file4.close();
+		}
+	}
+}
+
+
+//SETTERS AND GETTERS
+void Game::setLoaded(bool bolean) {
+	this->loaded = bolean;
+}
+
+void Game::setLevel(int lev) {
+	this->level = lev;
+}
+
+void Game::setPlayer(int player) {
+	this->player = player;
+}
+
+void Game::setGameSlot(int GL) {
+	this->gameSlot = GL;
+}
+
+int Game::getGameSlot() {
+	return this->gameSlot;
+}

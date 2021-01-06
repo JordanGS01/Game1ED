@@ -1,5 +1,6 @@
 #include "GameObj.h"
-#include "Textures.h"
+
+GameObj::GameObj() {}
 
 GameObj::GameObj(const char* rightSheet, const char* leftSheet, const char* upSheet, const char* downSheet, int x, int y) {
 
@@ -12,8 +13,8 @@ GameObj::GameObj(const char* rightSheet, const char* leftSheet, const char* upSh
 
 	life = 3;
 
-	xpos = x;
-	ypos = y;
+	xpos = y;//OJO ACA, CAMBIO
+	ypos = x;//OJO ACA, CAMBIO
 
 	initPosX = x;
 	initPosY = y;
@@ -36,57 +37,59 @@ void GameObj::update() {
 
 	destRect.h = 32;
 	destRect.w = 32;
-	destRect.x = xpos;
-	destRect.y = ypos;
+	destRect.x = xpos;//OJO ACA, CAMBIO
+	destRect.y = ypos;//OJO ACA, CAMBIO
 	
-	if (posD == 8) {
-		posD = 0;
-		Nodo* auxNodo = grafoMapa->buscaNodo(xpos / 32, ypos / 32);
+	//if (posD == 8) {
+		//posD = 0;
+		Nodo* auxNodo = grafoMapa->buscaNodo(ypos / 32, xpos / 32);
 		if (auxNodo != nullptr) {
 			nodoActual = auxNodo;
 		}
-	}
-	else if (posL == 8) {
-		posL = 0;
-		Nodo* auxNodo = grafoMapa->buscaNodo(xpos / 32, ypos / 32);
+	//}
+	//else if (posL == 8) {
+		//posL = 0;
+		//Nodo* auxNodo = grafoMapa->buscaNodo(ypos / 32, xpos / 32);
 		if (auxNodo != nullptr) {
 			nodoActual = auxNodo;
 		}
-	}
-	else if (posR == 8) {
-		posR = 0;
-		Nodo* auxNodo = grafoMapa->buscaNodo(xpos / 32, ypos / 32);
+	//}
+	//else if (posR == 8) {
+		//posR = 0;
+		//Nodo* auxNodo = grafoMapa->buscaNodo(ypos / 32, xpos / 32);
 		if (auxNodo != nullptr) {
 			nodoActual = auxNodo;
 		}
-	}
+	//}
 	
-	else if (posU == 8) {
-		posU = 0;
-		Nodo* auxNodo = grafoMapa->buscaNodo(xpos / 32, ypos / 32);
+	//else if (posU == 8) {
+		//posU = 0;
+		//Nodo* auxNodo = grafoMapa->buscaNodo(ypos / 32, xpos / 32);
 		if (auxNodo != nullptr) {
 			nodoActual = auxNodo;
 		}
-	}
+	//}
 }
 
 void GameObj::render() {
-	SDL_RenderCopy(Game::renderer, mainTexture, &srcRect, &destRect);
+	SDL_RenderCopy(Game::renderer, mainTexture, &srcRect, &destRect);//PROBLEMA CON LA DIRECCION EN MEMORIA DEL RENDERIZADOR DEL OBJETO GAME
 }
+
 //This functions helps to manage the movement of the objects.
 void GameObj::subXPos() {//Move left (sub to X coordinate)
-	xpos = xpos - 4;
+	xpos = xpos - 32;
 }
+
 void GameObj::addXPos() {//Move right (add to X coordinate)
-	xpos = xpos + 4;
+	xpos = xpos + 32;
 };
 
 void GameObj::subYPos() {//Move up (sub to Y coordinate)
-	ypos = ypos - 4;
+	ypos = ypos - 32;
 };
 
 void GameObj::addYPos() {//Move down (add to Y coordinate)
-	ypos = ypos + 4;
+	ypos = ypos + 32;
 };
 
 
@@ -99,8 +102,6 @@ void GameObj::addYsrc() {//This helps to move throught the source sprite sheet t
 		srcY += 32;
 	}
 };
-
-
 
 
 //Chagers of main texture.

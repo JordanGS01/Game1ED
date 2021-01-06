@@ -25,7 +25,7 @@ bool Recompensa::comprobarRecompensa(int coordenada_pj_x, int coordenada_pj_y, i
 }
 bool Recompensa::comprobarPuerta(int x, int y, bool vic) {
 
-	if (vic == true && x > 288 && x < 320 && y <= 32) {
+	if ((vic == true) && (x >= 320) && (x <= 384) && (y <= 32)) {
 		return true;
 	}
 	else {
