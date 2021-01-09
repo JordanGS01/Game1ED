@@ -60,24 +60,21 @@ void Map::loadMap(int arr[23][23]) {
 //The matrix values tell us what to draw in each space.
 void Map::drawMap(bool victoria) {
     int typeObj = 0;//This variable helps to know what image use to draw the laberint.
-        //____________
-    //PRUEBA
+     
     SDL_Texture* mino = Texture::LoadTexture("sprites/minotauro.png");
     SDL_Texture* recompensa = Texture::LoadTexture("sprites/oro.png");
     SDL_Texture* puerta = Texture::LoadTexture("sprites/puerta.png");
-    //_____________
 
     for (int row = 0; row < 23; row++) {
         for (int column = 0; column < 23; column++) {
 
             typeObj = map[row][column];
-            dest.x = column * 32;//23 columns
-            dest.y = row * 32;//23 rows
+            dest.x = column * 32;
+            dest.y = row * 32;
 
 
             switch (typeObj)
-            {
-                //Agregar case 0 para pintar el suelo
+            {                
             case 1:
                 Texture::draw(floor, src, dest);
                 Texture::draw(wall, src, dest);

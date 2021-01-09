@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cargar.cpp" />
     <ClCompile Include="Colision.cpp" />
     <ClCompile Include="ContRecompensa.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -159,16 +160,19 @@
     <ClCompile Include="Interfaz.cpp" />
     <ClCompile Include="Lifes.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="MMap.cpp" />
     <ClCompile Include="GameObj.cpp" />
     <ClCompile Include="Recompensa.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Textures.cpp" />
+    <ClCompile Include="Victoria.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cargar.h" />
     <ClInclude Include="Colision.h" />
     <ClInclude Include="ContRecompensa.h" />
     <ClInclude Include="Enemy.h" />
@@ -177,6 +181,7 @@
     <ClInclude Include="Grafo.h" />
     <ClInclude Include="Interfaz.h" />
     <ClInclude Include="Lifes.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="mapsMatrix.h" />
     <ClInclude Include="mapsMatrixForGraphs.h" />
     <ClInclude Include="MMap.h" />
@@ -184,6 +189,7 @@
     <ClInclude Include="Recompensa.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Textures.h" />
+    <ClInclude Include="Victoria.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

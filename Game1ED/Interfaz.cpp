@@ -64,13 +64,13 @@ void interfaz::dibujar() {
 	SDL_Texture* pj1 = Texture::LoadTexture_inter("sprites/rightMovement.png");
 	SDL_Texture* pj2 = Texture::LoadTexture_inter("sprites/BelenRight.png");
 	SDL_Texture* pj3 = Texture::LoadTexture_inter("sprites/JordanRight.png");
-	SDL_Texture* titulo = Texture::LoadText("Dungeon War Runners", rojo);
-	SDL_Texture* mensaje = Texture::LoadText("Selecciona el Personaje", blanco);
-	SDL_Texture* numerostext = Texture::LoadText("1          2          3         ", vino);
+	SDL_Texture* titulo = Texture::LoadText("Dungeon War Runners", rojo, this->render);
+	SDL_Texture* mensaje = Texture::LoadText("Selecciona el Personaje", blanco, this->render);
+	SDL_Texture* numerostext = Texture::LoadText("1          2          3         ", vino, this->render);
 
-	Texture::draw_text(mensaje, Msg);
-	Texture::draw_text(titulo, Message_rect);
-	Texture::draw_text(numerostext, numeros);
+	Texture::draw_text(mensaje, Msg, this->render);
+	Texture::draw_text(titulo, Message_rect, this->render);
+	Texture::draw_text(numerostext, numeros, this->render);
 
 	Texture::draw_interfaz(pj1, pos_p1, pos_p1_vent);
 	pos_p1_vent.x = 285;

@@ -5,6 +5,8 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_mixer.h"
+#include <string>
+#include <ctime>
 
 class Game {
 
@@ -21,6 +23,12 @@ public:
 	void loadEnemy1();
 	void loadEnemy3();
 	void loadPrizes();
+	void loadClock();
+
+	void dibujarPausa();
+	SDL_Rect tit_pausa, continuar, guardar, salir;
+	SDL_Event evento_pausa;
+	
 
 	void setLoaded(bool bolean);
 	void setLevel(int lev);
@@ -29,19 +37,28 @@ public:
 
 	int getGameSlot();
 
+	void initClock();
+	void stopClock();
+	clock_t getClock();
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
 
 	bool cerrado = true;
+	bool pause;
+	bool exitBut = false;
+	std::string playerName;
+
+	int delayEnemy = 0;
 private:
 
+	clock_t t;
+	clock_t gt;
 	int level, player, gameSlot;
 	bool loaded;
 
 	bool isRunning;
 	SDL_Window* window;
-
 };
 
 #endif

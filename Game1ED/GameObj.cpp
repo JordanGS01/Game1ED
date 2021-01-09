@@ -13,8 +13,8 @@ GameObj::GameObj(const char* rightSheet, const char* leftSheet, const char* upSh
 
 	life = 3;
 
-	xpos = y;//OJO ACA, CAMBIO
-	ypos = x;//OJO ACA, CAMBIO
+	xpos = y;
+	ypos = x;
 
 	initPosX = x;
 	initPosY = y;
@@ -37,38 +37,22 @@ void GameObj::update() {
 
 	destRect.h = 32;
 	destRect.w = 32;
-	destRect.x = xpos;//OJO ACA, CAMBIO
-	destRect.y = ypos;//OJO ACA, CAMBIO
+	destRect.x = xpos;
+	destRect.y = ypos;
 	
-	//if (posD == 8) {
-		//posD = 0;
 		Nodo* auxNodo = grafoMapa->buscaNodo(ypos / 32, xpos / 32);
 		if (auxNodo != nullptr) {
 			nodoActual = auxNodo;
 		}
-	//}
-	//else if (posL == 8) {
-		//posL = 0;
-		//Nodo* auxNodo = grafoMapa->buscaNodo(ypos / 32, xpos / 32);
 		if (auxNodo != nullptr) {
 			nodoActual = auxNodo;
 		}
-	//}
-	//else if (posR == 8) {
-		//posR = 0;
-		//Nodo* auxNodo = grafoMapa->buscaNodo(ypos / 32, xpos / 32);
 		if (auxNodo != nullptr) {
 			nodoActual = auxNodo;
 		}
-	//}
-	
-	//else if (posU == 8) {
-		//posU = 0;
-		//Nodo* auxNodo = grafoMapa->buscaNodo(ypos / 32, xpos / 32);
 		if (auxNodo != nullptr) {
 			nodoActual = auxNodo;
 		}
-	//}
 }
 
 void GameObj::render() {

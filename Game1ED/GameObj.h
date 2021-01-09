@@ -17,7 +17,6 @@ public:
 
 	GameObj();
 	GameObj(const char* rightSheet, const char* leftSheet, const char* upSheet, const char* downSheet, int xpos, int ypos);//Constructor
-	~GameObj();//Destructor
 
 	void render();
 	void update();

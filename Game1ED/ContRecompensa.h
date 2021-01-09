@@ -8,7 +8,6 @@ class ContRecompensa {
 public:
 
 	ContRecompensa(const char* CantRecompensa, const char* Recomp, int xposNum, int yposNum, int xposOro, int yposOro);
-	~ContRecompensa();
 
 	int srcY;
 	void render();

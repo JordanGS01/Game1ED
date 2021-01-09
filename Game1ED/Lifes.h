@@ -8,8 +8,6 @@ class Life {
 public:
 
 	Life(const char* LifePlayer, int xpos, int ypos);
-	Life();
-
 
 	void render();
 	void update();

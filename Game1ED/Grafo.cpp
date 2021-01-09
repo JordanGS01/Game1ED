@@ -168,7 +168,7 @@ bool Grafo::insertaArista(Nodo* src, Nodo* dest, int peso, bool doble,char direc
 void Grafo::inicializaNodosMatriz(int matriz[23][23]) {
 	for (int i = 0; i < 23; i++) {		
 		for (int j = 0; j < 23; j++) {  
-			if (matriz[i][j] == 0) {///////////////////////////////////CAMBIO
+			if (matriz[i][j] == 0) {
 				insertaNodo(i,j);
 			}
 		}
@@ -184,7 +184,7 @@ bool Grafo::adyacentLeft(int x, int y, int matriz[23][23]) {
 	int xAux = x-1;
 	for (xAux; xAux > 0; xAux--) {
 		if (matriz[xAux][y] == 1) { break; }
-		else if (matriz[xAux][y] == 0) {///////////////////////////////////CAMBIO
+		else if (matriz[xAux][y] == 0) {
 			return insertaArista(auxNodo, buscaNodo(xAux,y), peso, true,'L');
 		}
 		peso++;
@@ -197,7 +197,7 @@ bool Grafo::adyacentRight(int x, int y, int matriz[23][23]) {
 	int xAux = x+1;
 	for (xAux; xAux < 22; xAux++) {//22 because there'll be ALWAYS a 1 at the last position of the matrix
 		if (matriz[xAux][y] == 1) { break; }
-		else if (matriz[xAux][y] == 0) {///////////////////////////////////CAMBIO
+		else if (matriz[xAux][y] == 0) {
 			return insertaArista(auxNodo, buscaNodo(xAux,y), peso, true,'R');
 		}
 		peso++;
@@ -210,7 +210,7 @@ bool Grafo::adyacentDown(int x, int y, int matriz[23][23]) {
 	int yAux = y+1;
 	for (yAux; yAux < 22; yAux++) {
 		if (matriz[x][yAux] == 1) { break; }
-		else if (matriz[x][yAux] == 0) {///////////////////////////////////CAMBIO
+		else if (matriz[x][yAux] == 0) {
 			return insertaArista(auxNodo, buscaNodo(x,yAux), peso, true,'D');
 		}
 		peso++;
@@ -249,7 +249,7 @@ void Grafo::inicializaAristasMatriz(int matriz[23][23]) {
 }
 
 //Short ways
-char Grafo::Dijkstra(Nodo* inicio, Nodo* fin) {//HACE FALTA DEVOLVER EL ARREGLO CON LOS VERTICES QUE FORMAN EL CAMINO
+char Grafo::Dijkstra(Nodo* inicio, Nodo* fin) {
 	desmarca();
 	desmarcaAristas();
 	CPA->vaciarCola();
