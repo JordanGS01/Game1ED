@@ -104,10 +104,25 @@ Se creó una matriz de 23x23 para manejar el pintado del laberinto, siendo un va
    
  **Metodos de Grafos**
    Se dio la implementacion de metodos encargados del manejo de grafos, para la insercion, busqueda, tanto de nodos como de ejes.
-## Analisis de resultados
+   
+   **Estructura de los archivos utilizados para el guardado**
+   Se utilizaron archivos binarios para el guardado de las partidas del juego. Los archivos están estructurados de una manera relativamente sencilla, siendo esta la de escribir en el archivo por lineas, así, a la hora de guardar y escribir solo se lee el archivo líinea a línea, asignando el valor binario a cada objeto correspondiente. Cada objeto que requiere guardado posee su propio archivo binario, esto debido a la facilidad que proporciona a la hora de ser trabajado, tanto para guardado como para cargado de las partidas.
+   
+   **Estructura del archivo de Ranking**
+   El archivo de ranking tiene la misma estructura que la usada en los demás archivos binarios. Está compuesto unicamente de cinco lineas, debido a que los rankings se guardan solo en top 5.
+   
+   **Acceso a los archivos binarios**
+   El acceso a los archivos binarios es muy simple, se busca el inicio del archivo y seguidamente se lee el archivo línea a línea, asignando valores a los objetos correspondientes segun la línea correspondiente. Cabe resaltar que para para trabajar con los archivos se utiliza la librería fstream de C++.
+   
+## Analisis de resultados 2da etapa
 Se logro con éxito al implementación de movimiento, animación, y el pintado del laberinto, los personajes pueden reconocer con exito las recompensas, asi como la implementación de
   sonido, en esta fase del proyecto del proyecto no se implementaron colisiones con paredes del laberinto estas quedaran abiertas a cambios en futuras fases, así tambien
-  como los métodos de recompensa quedaran abiertos a cambios para lograr adaptarse a partes posteriores, el principal problema esta presente en la correcta implementacion de grafos para el movimiento autonomo de los enemigos. No se logra implementar un movimiento correcto por las "calles" del laberinto, pero los enemigos buscar la posicion del personaje de una manera peculiar. Para proyectos posteriores se pretende implementar todo el movimiento de los personajes y los grafos utilizando unicamente grafos, para tener una mayor facilidad a la hora de poder realizar las busquedas del enemigo hasta el jugador.
+  como los métodos de recompensa quedaran abiertos a cambios para lograr adaptarse a partes posteriores, el principal problema esta presente en la correcta implementacion de grafos para el movimiento autónomo de los enemigos. No se logra implementar un movimiento correcto por las "calles" del laberinto, pero los enemigos buscar la posicion del personaje de una manera peculiar. Para proyectos posteriores se pretende implementar todo el movimiento de los personajes y los grafos utilizando unicamente grafos, para tener una mayor facilidad a la hora de poder realizar las busquedas del enemigo hasta el jugador.
+  
+ ## Analisis de resultados 3ra etapa
+  Se consiguen todos los puntos del enunciado. Se corrigen errores de la etapa anterior, por ejemplo el mal funcionamiento de las estructuras de grafos encargadas del movimiento independiente de los enemigos. Se modifica el movimiento del personaje y los enemigos para poder trabajar mejor con los grafos. Ademas, de la etapa anterior tambien se mejora el tiempo que dura un enemigo para moverse de una casilla a otra, debido a que era sumamente dificil ganar el juego. 
+  Para los cuatro estados diferentes que se requerían, se crearon 4 carpetas distintas, entonces, dependiendo del "slot" que el jugador seleccione para guardar la partida, se accede a la carpeta y se guardan los archivos binarios en esta.
+  Se utilizó la librería SDL para crear el 100% de los aspectos gráficos del juego.
   
 ## Biografia
 - [1]S. Baquero, "SDL sonidos - ID-000244379", Sites.google.com, 2014. [Online]. Available: https://sites.google.com/site/id000244379/sdl/sdl-1. [Accessed: 19- Oct- 2020].
